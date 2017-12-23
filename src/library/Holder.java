@@ -2,11 +2,11 @@ package library;
 
 import java.util.TreeSet;
 
-public class Owner {  // refactor "Owner" to "Location" without inventory?
+public class Holder {  // refactor "Holder" to "Location" without inventory?
 	private String name;
 	private TreeSet<InventoryItem> inventory;
 
-	public Owner(String name) {
+	public Holder(String name) {
 		this.name = name;
 		inventory = new TreeSet<InventoryItem>();
 	}
@@ -28,7 +28,7 @@ public class Owner {  // refactor "Owner" to "Location" without inventory?
 	}
 
 	public void returnItem(Borrowable item) {
-		item.returnTo(Main.LIBRARY);
+		item.returnToOwner();
 	}
 
 	@Override

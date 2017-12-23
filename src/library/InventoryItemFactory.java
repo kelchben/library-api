@@ -6,7 +6,7 @@ public class InventoryItemFactory {
 		// TODO
 	}
 
-	public Book createBook(String title, String author, String isbn, Owner owner) {
+	public Book createBook(String title, String author, String isbn, Holder holder) {
 		// TODO
 		return null;
 	}

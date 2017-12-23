@@ -1,6 +1,6 @@
 package library;
 
 public interface Borrowable {
-	void borrowTo(Owner nextOwner);
-	void returnTo(Owner nextOwner);
+	void borrowTo(Holder nextHolder);
+	void returnToOwner();
 }

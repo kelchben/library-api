@@ -2,14 +2,22 @@ package library;
 
 public abstract class InventoryItem implements Comparable<InventoryItem> {
 	protected String id;  // for comparing items -- book: isbn -> id 
-	protected Owner owner;
+	protected Holder holder;
+	protected Holder owner;
 	protected int durability; // item health: 0 means "broken"
 
-	public InventoryItem(String id, int durability, Owner owner) {
+	public InventoryItem(String id, int durability, Holder holder) {
 		this.id = id;
-		this.owner = owner;
+		this.owner = holder;
+		this.holder = holder;
 		this.durability = durability;
-		owner.addToInventory(this);
+		holder.addToInventory(this);
+	}
+
+	protected void moveTo(Holder nextHolder) {
+			nextHolder.addToInventory(this);  
+			this.holder.removeFromInventory(this);
+			holder = nextHolder;
 	}
 
 	@Override
