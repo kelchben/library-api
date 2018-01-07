@@ -2,9 +2,15 @@ package library;
 
 import java.util.TreeSet;
 
-public class Holder {  // refactor "Holder" to "Location" without inventory?
-	private String name;
-	private TreeSet<InventoryItem> inventory;
+public final class Holder {  // refactor "Holder" to "Location" without inventory?
+
+	// TODO builder vs static factory?
+	public final static Holder none = new Holder("none"); // container for n/a items 
+
+
+	private final String name;
+	private final TreeSet<InventoryItem> inventory;
+
 
 	public Holder(String name) {
 		this.name = name;
@@ -13,6 +19,10 @@ public class Holder {  // refactor "Holder" to "Location" without inventory?
 
 	public String getName() {
 		return name;
+	}
+
+	public TreeSet<InventoryItem> getInventory() {
+		return inventory;		
 	}
 
 	public boolean removeFromInventory(InventoryItem item) {
@@ -33,6 +43,6 @@ public class Holder {  // refactor "Holder" to "Location" without inventory?
 
 	@Override
 	public String toString() {
-		return name;
+		return name; 
 	}
 }

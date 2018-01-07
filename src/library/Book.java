@@ -1,17 +1,25 @@
 package library;
 
+// TODO make this generic
 public class Book extends InventoryItem implements Borrowable {
 
+// TODO these should be in enum
 	public static final int INITIAL_BOOK_DURABILITY = 50;
 	public static final int REQUESTS_TILL_RESTOCK = 2;
 	public static final int REQUESTS_TILL_NEW = 5;
 
-	private String title;
-	private String author;
-	private String isbn;
+	private final String title;
+	private final String author;
+	private final String isbn;
 
-	public Book(String title, String author, String isbn, Holder holder) {
-		super(isbn, INITIAL_BOOK_DURABILITY, holder);
+	public final String getTitle() {return title;}
+	public final String getAuthor() {return author;}
+	public final String getIsbn() {return isbn;}
+
+
+	// TODO builder instead of constructor -> plus: private constructor prevents (external) subclassing
+	public Book(String title, String author, String isbn, Holder owner) {
+		super(isbn, INITIAL_BOOK_DURABILITY, owner);
 		this.title = title;
 		this.author = author;
 		this.isbn = isbn;
@@ -27,15 +35,16 @@ public class Book extends InventoryItem implements Borrowable {
 		System.out.println("Created: \"" + this.title + "\" by " + this.author + " in " + holder.toString() + "  ISBN: " + this.isbn);
 	}
 
+
 	@Override
 	public void borrowTo(Holder nextHolder) {
 		if (holder == owner) { 
 			moveTo(nextHolder);
 			durability--;  // borrowing reduces books health by 1
 			System.out.println(holder.getName() + " borrowed " + title + " | Durability: " + durability);
-		} else if (holder == Main.VOID) {
+		} else if (holder == Holder.none) {
 			System.out.println(title + " ist zur Zeit nicht verfügbar");
-			durability--;  // negative durability = requests
+			durability--;  // negative durability equals requests TODO change this!
 			this.checkAndRestock();
 		} else {
 			System.out.println("Das Buch ist gerade ausgeliehen.");
@@ -55,8 +64,8 @@ public class Book extends InventoryItem implements Borrowable {
 	public void returnToOwner() {
 		holder.removeFromInventory(this);
 		if (durability == 0) {  // TODO check if LIBRARY and VOID exist?
-			moveTo(Main.VOID);
-			durability = -Math.abs(REQUESTS_TILL_RESTOCK - REQUESTS_TILL_NEW);  // set to -3 
+			moveTo(Holder.none);
+			durability = -Math.abs(REQUESTS_TILL_RESTOCK - REQUESTS_TILL_NEW);  // set to -3 (restock at -5)
 			System.out.println(this.title + " is too worn now. Moved it to " + holder.getName() + " with Durability " + durability);
 		} else { 
 			System.out.println(holder.getName() + " returned " + title + " | Durability: " + durability);

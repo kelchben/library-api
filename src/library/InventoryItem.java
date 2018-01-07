@@ -1,17 +1,35 @@
 package library;
 
-public abstract class InventoryItem implements Comparable<InventoryItem> {
-	protected String id;  // for comparing items -- book: isbn -> id 
-	protected Holder holder;
-	protected Holder owner;
-	protected int durability; // item health: 0 means "broken"
+import java.util.TreeSet;
 
-	public InventoryItem(String id, int durability, Holder holder) {
+// TODO use composition (w reusable forwarding class?) instead of inheritance?! 
+// TODO ---> MAKE THIS AN INTERFACE + AbstractInventoryItem | AbstractOwned, ...  (mixin)
+
+/* You can, however, combine the advantages of interfaces and abstract classes
+ * by providing an abstract skeletal implementation class to go with an interface
+*/
+
+// TODO "Don’t provide methods that modify the object’s state" --> holder anders loesen!
+// TODO make this generic
+public abstract class InventoryItem implements Comparable<InventoryItem> {
+
+	protected static final TreeSet<InventoryItem> INDEX = new TreeSet<InventoryItem>();  // global list of all items
+
+	protected final String id;  // for Comparable - books use isbn as id
+	protected final Holder owner;
+	protected Holder holder; // breaks immutability
+	protected int durability; // breaks immutability... but necessary? use CountDownLatch?
+	// TODO requests - more clarity then negative durabilty (which != requests)
+
+
+	// TODO builder statt constructor
+	public InventoryItem(String id, int durability, Holder owner) {
 		this.id = id;
-		this.owner = holder;
-		this.holder = holder;
+		this.owner = owner;
+		this.holder = owner;
 		this.durability = durability;
 		holder.addToInventory(this);
+		INDEX.add(this);
 	}
 
 	protected void moveTo(Holder nextHolder) {
