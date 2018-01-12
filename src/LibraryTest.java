@@ -1,3 +1,7 @@
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
+
 import com.github.krlgit.lms.*;
 
 public class LibraryTest {
@@ -8,7 +12,9 @@ public class LibraryTest {
 
 	// try this
 	Patron p =  Library.patronBuilder()
-			.username("bla")
+			.username("Buntspecccht")
+			.firstName("Merle")
+			.lastName("Spockstadt")
 			.birthdate(2012,5,3)
 			.build();
 
@@ -22,14 +28,58 @@ public class LibraryTest {
 			.build()
 			);
 
-	myLib.registerCopyOf(new BookDescription.Builder()  
-			.isbn(Isbn.from("123456789X"))
-			.title("Holla")
-			.author("Miau")
+	myLib.registerBook(new BookDescription.Builder()  
+			.isbn(Isbn.from("123456789X"))    
+			.title("Holzige Holothurien")
+			.author("Hans Hobel")
 			.build()  
 			);
 
+	myLib.registerBook(new BookDescription.Builder()  
+			.isbn(Isbn.from("1234567893"))    
+			.title("Mi mi mi")
+			.author("O. Opera")
+			.build()  
+			);
+
+	myLib.registerCopy("123456789X");
+
+	myLib.registerBook(new BookDescription.Builder()  
+			.isbn(Isbn.stripFrom("1111-2222-4444-3"))
+			.title("Brudermord")
+			.author("Kain Able")
+			.build()  
+			);
+
+	myLib.registerBook(new BookDescription.Builder()  
+			.isbn(Isbn.stripFrom("3333-1111-4444-6"))
+			.title("Dampfschifffahrt leicht gemacht")
+			.author("Spina Topp")
+			.build()  
+			);
+
+	// myLib.checkoutItem("123456789X:2", "krl");
+
+	// TODO this sucks! return arraylist not collection
+	// TODO DIRECT STRING ENTRY
+	Set<BookCopy> mycopies = myLib.getAllCopies("123456789X");
+
+	BookCopy mycopy = (BookCopy)(mycopies.toArray())[0] ;
+
+	myLib.checkoutItem(mycopy.barcode(), Username.from("krl"));
+	myLib.returnItem(mycopy.barcode());
+
+
+	System.out.println(myLib.checkoutItem(mycopy.barcode(), p.username()));
+
 	
+	//mycopies[0].
+	for (BookCopy copy : mycopies) {
+		System.out.println(copy);
+	}
+
+	System.out.println("\nHistory:");
+	System.out.println(myLib.getCirculationHistory(mycopy.barcode()));
 
 	}
 }

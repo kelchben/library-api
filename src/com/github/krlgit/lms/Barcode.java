@@ -1,12 +1,17 @@
 package com.github.krlgit.lms;
 
-// TODO refactor: Barcode should not rely on Isbn! Messy?!
+// TODO refactor: Barcodes should just be strings?
 class Barcode {
 	// final byte type // (patron or book)
 	// final byte libraryId;
 	// final int bookId;  
 	private final Isbn isbn;
 	private final int copyId;   // use byte, short?
+
+	public static String from(String barcode) {
+	    // TODO! 	
+		return null;
+	}
 
     Barcode(Isbn isbn, int copyId) {
 		this.isbn = isbn; 
@@ -40,4 +45,6 @@ class Barcode {
     public final int copyId() {
     	return copyId;
     }
+
+
 }

@@ -5,11 +5,11 @@ package com.github.krlgit.lms;
  * TODO Use it for caching hashCode?
  * TODO remove this class? replace with string?
  */
-class Username {
+public class Username {
 	private final String username;
 
 
-    static Username from(String str) {
+    public static Username from(String str) {
 		return new Username(str);
 	}
 

@@ -7,7 +7,7 @@ public class Isbn {
 	public static boolean isValid(String str) {
 	// TODO implement proper check digit algorithm for ISBN10 and ISBN13
 		int length = str.length();
-		if ( !( (length == 10 && str.matches("[0-9]+X")) ||
+		if ( !( (length == 10 && str.matches("[0-9]+[X|0-9]$")) ||
 	    	    (length == 13 && str.matches("[0-9]+")))
 	        ) {
 			return false;

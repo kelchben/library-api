@@ -26,6 +26,10 @@ class BookEntry {
 		requestsNeeded = 0;
 	}
 
+	public final Set<BookCopy> copies() {
+		return new HashSet<>(copies);
+	}
+
 	public final BookCopy addBookCopy() {
 		Barcode barcode = generateBarcode();
 		BookCopy copy = new BookCopy(description, barcode);
@@ -113,6 +117,15 @@ class BookEntry {
 		return this;
 	}
 
+	final Set<Patron> requests() {
+		return new HashSet<>(requests);
+	}
+
+	@Override
+	public String toString() {
+		return description.title() + " ISBN: " + description.isbn() + " Copies: " + copies.size();
+    //TODO Copies:  available | unavailable
+	}
 
 }
 

@@ -39,6 +39,12 @@ public class AccountEntry {
 		return this;
 	}
 
+	@Override
+	public String toString() {
+		return "Username: " + patron.username() + " | Currently borrowed Items: " + currentlyBorrowed.size();
+		//TODO this prbly should be only username
+	}
+
 // TODO remove? not working like that without dependency on static Collections
 //	public final AccountEntry borrowBook(BookEntry book) {
 //		

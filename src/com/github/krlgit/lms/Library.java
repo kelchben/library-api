@@ -1,12 +1,9 @@
 package com.github.krlgit.lms;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Set;
 
 // TODO use Barcode as Key instead of Isbn (Isbn is inside...)?
@@ -49,11 +46,12 @@ public class Library {
 
 // REGISTER ----------------------------------------------------->
 
-	public final Barcode registerCopyOf(BookDescription descr) {
+	public final Barcode registerBook(BookDescription descr) {
 		return createEntry(descr)
 			   .addBookCopy()
 			   .barcode();
 	}
+
 
 	public final Username registerPatron(Patron patron) {
 		return createEntry(patron)
@@ -61,7 +59,23 @@ public class Library {
 			   .username();
 	}
 
+	public final Barcode registerCopy(Isbn isbn) {
+		return fetchEntry(isbn)
+				.addBookCopy()
+				.barcode();
+	}
+
+	//TODO  put all to String adapters in extra section OR make generic adapter?
+	// OR only use Strings as input! <----
+	public final Barcode registerCopy(String isbn) {
+		return registerCopy(Isbn.from(isbn));
+	}
+
 // CHECKOUT / RETURN / REQUEST ----------------------------------->
+
+//	public final boolean checkoutItem(String barcode, String username) {
+//		return checkoutItem(Barcode.from(barcode), Isbn.from(barcode));
+//	}
 
 	public final boolean checkoutItem(Barcode barcode, Username username) 
 			throws IllegalArgumentException {
@@ -75,8 +89,8 @@ public class Library {
 		BookCopy copy = fetchEntry(barcode.isbn())
 			  	        .getCopyWith(barcode);
 
-		if (copy.isCirculating()) {
-			throw new IllegalStateException(
+		if (copy.isCirculating()) {   // this should not be possible (duplicate barcode)
+			throw new IllegalStateException(    
 					"The copy " + barcode + " is not available. Borrowed by User " + copy.lastOwner().username());
 		}
 
@@ -112,8 +126,9 @@ public class Library {
 		Patron patron = fetchEntry(username).patron();
 		BookEntry entry = fetchEntry(isbn);
 
-		 if ( !entry.hasAvailableCopy() &&  // books can only be requested when there's no copy available
-			   entry.addToRequests(patron) == entry.requestsNeeded() ) {  // addToRequests returns int 
+		 if ( !shoppingList.contains(isbn) && 
+			  !entry.hasAvailableCopy() &&  
+			   entry.addToRequests(patron) == entry.requestsNeeded() ) {  
 
 			entry.clearRequests();
 			shoppingList.add(isbn);  
@@ -124,25 +139,65 @@ public class Library {
 	}
 
 	public final void requestNewItem(BookDescription description, Username username) {
-		createEntry(description)  // throws IllegalArgumentException when isbn already in system
+		 createEntry(description)  // throws IllegalArgumentException when isbn already in system
 		.setRequestsNeeded(REQUESTS_FOR_AQUISITION)
 		.addToRequests(fetchEntry(username).patron());  // set takes care of duplicates
 	}
 
 
-
-
-
 // QUERY --------------------------------------------------------->
 
-//=============================================================================//
-//                            IMPLEMENTATION                                   //
-//=============================================================================//
+	public final Collection<BookEntry> getAllBookEntries() {
+		return catalog.values();
+	}
+
+	public final Map<Barcode, Patron> getCurrentOwners(Isbn isbn) {
+		Map<Barcode, Patron> owners = new HashMap<>();
+
+		for (BookCopy copy : fetchEntry(isbn).copies()) {
+			if (copy.isCirculating()) {
+				owners.put(copy.barcode(), copy.lastOwner());
+			}
+		}
+		return owners;
+	}
+
+	public final Collection<Patron> getCirculationHistory(Barcode barcode) {
+		return fetchEntry(barcode.isbn())
+				.getCopyWith(barcode)
+				.circulationHistory();
+
+	}
+
+	public final Set<Patron> requestsList(Isbn isbn) {
+		return fetchEntry(isbn)
+				.requests();
+	}
+
+	public final int getRequestsAsInt(Isbn isbn) {
+		return requestsList(isbn)
+				.size();
+	}
+	public final int getRequestsAsInt(String isbn) {
+		return getRequestsAsInt(Isbn.from(isbn));
+	}
+
+	public final Set<BookCopy> getAllCopies(Isbn isbn) {
+		return fetchEntry(isbn).copies();
+	}
+	public final Set<BookCopy> getAllCopies(String isbn) {
+		return getAllCopies(Isbn.from(isbn));
+	}
 
 
-// CREATE -------------------------------------------------------->
+	//=============================================================================//
+	//                            IMPLEMENTATION                                   //
+	//=============================================================================//
 
-// REGISTER ------------------------------------------------------>
+
+	// CREATE -------------------------------------------------------->
+
+	// REGISTER ------------------------------------------------------>
 
 	private final BookEntry createEntry(BookDescription description) {
 		Isbn isbn = description.isbn();
@@ -157,7 +212,7 @@ public class Library {
 	}
 
 
-    // TODO overload with extra bool for "unsave" adding (without Patron==Patron check)
+	// TODO overload with extra bool for "unsave" adding (without Patron==Patron check)
 	private final AccountEntry createEntry(Patron unregisteredPatron) {
 		Username username = unregisteredPatron.username();
 
@@ -181,41 +236,41 @@ public class Library {
 	}
 
 
-// CHECKOUT / RETURN / REQUEST ---------------------------------------------------->
+	// CHECKOUT / RETURN / REQUEST ---------------------------------------------------->
 
 
 	// TODO this is wrong conceptually: first find a book, then return copy, THEN borrow 
 
-// QUERY -------------------------------------------------->
+	// QUERY -------------------------------------------------->
 
 
 	// overload "lookup" ? lookupAccount? does this even work without static library?
-	private final AccountEntry account(String username) {
-		return fetchEntry(Username.from(username));
-	}
-
 	private final AccountEntry fetchEntry(Username usr) {
 		try {
-		return accounts.get(usr);
+			return accounts.get(usr);
 		} catch(NullPointerException e) {
 			throw new IllegalArgumentException(
 					"Username: " + usr + " not found.");
 		}
 	}
 
-	private final BookEntry book(String isbn) {
-		return fetchEntry(Isbn.from(isbn));
-	}
-
 	private final BookEntry fetchEntry(Isbn isbn) {
 		try {
-		return catalog.get(isbn);
+			return catalog.get(isbn);
 		} catch(NullPointerException e) {
 			throw new IllegalArgumentException(
 					"Isbn: " + isbn + " not found.");
 		}
 	}
 
+
+	private final Patron fetchPatron(String username) {
+		return fetchEntry(Username.from(username)).patron();
+	}
+
+	private final BookDescription fetchBook(String isbn) {
+		return fetchEntry(Isbn.from(isbn)).bookDescription();
+	}
 
 }
 

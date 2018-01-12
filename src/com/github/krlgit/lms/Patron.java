@@ -105,6 +105,10 @@ public final class Patron {
 		return result;
 	}
 			   
+	@Override
+	public String toString() {
+		return username + " (" + firstName + " " + lastName + ")";
+	}
 
 
 }
