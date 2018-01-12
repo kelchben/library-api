@@ -1,5 +1,6 @@
 package com.github.krlgit.lms;
 
+// TODO this should probably only be a static helper class for validatin and Isbn stored as String
 public class Isbn {
 	private final String isbn;
 

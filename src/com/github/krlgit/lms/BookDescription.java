@@ -1,7 +1,7 @@
 package com.github.krlgit.lms;
 
 // TODO move Builder named "addBook()"..."submit() o.a. to Library class and make constructor package private
-class BookDescription {
+public class BookDescription {
 
 		private final Isbn isbn;
 		private final String title;
@@ -27,7 +27,7 @@ class BookDescription {
 
 		}
 
-		private BookDescription(Builder builder) {
+	    BookDescription(Builder builder) {
 			isbn = builder.isbn;
 			title = builder.title;
 			author = builder.author;
@@ -37,5 +37,11 @@ class BookDescription {
 		public Isbn isbn() { return isbn; }
 		public String title() { return title; }
 		public String author() { return author; }
+
+		@Override
+		public String toString() {
+			return "Isbn: " + isbn + "%nTitle: " + title + "%nAuthor: " + author;
+			// TODO use reflection to loop over all fields?
+		}
 
 }

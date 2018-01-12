@@ -3,7 +3,7 @@ package com.github.krlgit.lms;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
-class Patron {
+public final class Patron {
 	private final Username username;
 	private final String firstName;
 	private final String lastName;

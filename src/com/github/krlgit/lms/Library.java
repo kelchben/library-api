@@ -6,21 +6,25 @@ import java.util.Map;
 import java.util.Set;
 
 public class Library {
-    private static final int MAX_TIMES_BORROWED = 50;
+    private static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
 	public static final int BOOKS_ALLOWED_PER_PATRON = 10;
 
 	private final Map<Isbn, BookEntry> catalog;
 	private final Map<Username, AccountEntry> accounts;
 
-	// TODO make configuration a non static class an pass to Library constructor
+
+//=============================================================================//
+//                                   API                                       //
+//=============================================================================//
+
 
 // CREATE ------------------------------------------------------>
 
-	public static final BookDescription.Builder buildBook() {
+	public static final BookDescription.Builder bookBuilder() {
 		return new BookDescription.Builder();
 	}
 
-	public static final Patron.Builder buildPatron() {
+	public static final Patron.Builder patronBuilder() {
 		return new Patron.Builder();
 	}
 
@@ -31,12 +35,64 @@ public class Library {
 
 // REGISTER ----------------------------------------------------->
 
+	public final Barcode registerCopyOf(BookDescription descr) {
+		return register(descr)
+			   .addBookCopy()
+			   .barcode();
+	}
 
-	public final BookEntry register(BookDescription description) {
+	public final Username registerPatron(Patron patron) {
+		return register(patron)
+			   .patron()
+			   .username();
+	}
+
+// CHECKOUT / RETURN / REQUEST ----------------------------------->
+
+	public final boolean checkoutItem(Barcode barcode, Username username) {
+		Isbn isbn = barcode.isbn();
+		
+	}
+
+	public final boolean checkoutItem( isbn, String username) {
+		
+	}
+
+
+	private final BookCopy checkout(Isbn isbn, Username username) {
+		AccountEntry account = account(username);
+
+		if (account.isAtCapacity(BOOKS_ALLOWED_PER_PATRON)) {
+			throw new IllegalStateException(
+					"User: " + username + " is at capacity (" + BOOKS_ALLOWED_PER_PATRON + " Books allowed).");
+		}
+
+		BookEntry entry = book(isbn);  // uglaaaay!
+	//TODO try? or hasCopy?	
+		BookCopy copy = entry.getCopy();
+
+		account.add(copy);
+		copy.appendToCirculationHistory(account.patron());
+		return copy;
+	}
+
+// QUERY --------------------------------------------------------->
+
+//=============================================================================//
+//                            IMPLEMENTATION                                   //
+//=============================================================================//
+
+
+// CREATE -------------------------------------------------------->
+
+// REGISTER ------------------------------------------------------>
+
+	private final BookEntry register(BookDescription description) {
 		Isbn isbn = description.isbn();
 
 		if (catalog.containsKey(isbn)) {
-			throw new IllegalArgumentException("A Entry with Isbn " + isbn + " already exists in " + catalog);
+			throw new IllegalArgumentException(
+					"A Entry with Isbn " + isbn + " already exists in " + catalog);
 		}
 
 		catalog.put(isbn, BookEntry.from(description));
@@ -45,11 +101,12 @@ public class Library {
 
 
     // TODO overload with extra bool for "unsave" adding (without Patron==Patron check)
-	public final AccountEntry register(Patron unregisteredPatron) {
+	private final AccountEntry register(Patron unregisteredPatron) {
 		Username username = unregisteredPatron.username();
 
 		if (accounts.containsKey(username)) {
-			throw new IllegalArgumentException("Username: " + username + " is already taken.");
+			throw new IllegalArgumentException(
+					"Username: " + username + " is already taken.");
 		}
 
 		// check if patron already exists with different username (see patron.equals())
@@ -57,7 +114,8 @@ public class Library {
 		for (Map.Entry<Username, AccountEntry> entry : accounts.entrySet()) {
 			Patron p = entry.getValue().patron();
 			if (p.equals(unregisteredPatron)) {
-				throw new IllegalArgumentException("This Patron is already registered with Username: " + p.username());
+				throw new IllegalArgumentException(
+						"This Patron is already registered with Username: " + p.username());
 			}
 		}
 
@@ -66,53 +124,41 @@ public class Library {
 	}
 
 
+// CHECKOUT / RETURN / REQUEST ---------------------------------------------------->
+
+
+	// TODO this is wrong conceptually: first find a book, then return copy, THEN borrow 
 
 // QUERY -------------------------------------------------->
 
 
 	// overload "lookup" ? lookupAccount? does this even work without static library?
-	public final AccountEntry account(String username) {
+	private final AccountEntry account(String username) {
 		return account(Username.from(username));
 	}
-	
-	public final BookEntry book(String isbn) {
-		return book(Isbn.from(isbn));
-	}
 
-	private AccountEntry account(Username usr) throws IllegalArgumentException {
+	private final AccountEntry account(Username usr) {
 		try {
 		return accounts.get(usr);
 		} catch(NullPointerException e) {
-			throw new IllegalArgumentException("Username: " + usr + " not found.");
+			throw new IllegalArgumentException(
+					"Username: " + usr + " not found.");
 		}
 	}
 
-	private BookEntry book(Isbn isbn) throws IllegalArgumentException {
+	private final BookEntry book(String isbn) {
+		return book(Isbn.from(isbn));
+	}
+
+	private final BookEntry book(Isbn isbn) {
 		try {
 		return catalog.get(isbn);
 		} catch(NullPointerException e) {
-			throw new IllegalArgumentException("Isbn: " + isbn + " not found.");
+			throw new IllegalArgumentException(
+					"Isbn: " + isbn + " not found.");
 		}
 	}
 
-// BORROW / RETURN / REQUEST ---------------------------------------------------->
-
-	public final BookCopy borrow(String username, String isbn) {
-		AccountEntry account = account(username);
-
-		if (account.isAtCapacity(BOOKS_ALLOWED_PER_PATRON)) {
-			throw new IllegalStateException(
-					"User: " + username + " is at capacity (" + BOOKS_ALLOWED_PER_PATRON + " Books allowed).");
-		}
-
-		BookEntry entry = book(Isbn.from(isbn));  // uglaaaay!
-	//TODO try? or hasCopy?	
-		BookCopy copy = entry.getCopy();
-
-		account.add(copy);
-		copy.appendToCirculationHistory(account.patron());
-		return copy;
-	}
 
 }
 
