@@ -1,6 +1,7 @@
 package com.github.krlgit.lms;
 
-public final class BookDescription {
+// TODO move Builder named "addBook()"..."submit() o.a. to Library class and make constructor package private
+class BookDescription {
 
 		private final Isbn isbn;
 		private final String title;

@@ -4,15 +4,16 @@ public class LibraryTest {
 
 	public static void main(String[] args) {
 
-	Library l = Library.create();
+	Library l = new Library();
 
 	// try this
-	l.registerPatron()
+	Library.buildPatron()
 	.username("bla")
 	.birthdate(2012,5,3)
-	.submit();
+	.build();
 
-	l.add(new Patron.Builder()
+
+	l.register(Library.buildPatron()  
 			.username("krl")
 			.firstName("Karl")
 			.lastName("Misak")
@@ -20,13 +21,14 @@ public class LibraryTest {
 			.build()
 			);
 
-	l.add(new BookDescription.Builder()   // new 
-			.isbn(new Isbn())
+	l.register(Library.buildBook()  
+			.isbn(Isbn.from("123456789X"))
 			.title("Holla")
 			.author("Miau")
-			.build()  // submit
+			.build()  // submit?
 			);
-
+	
+	l.account("krl").borrowBook(isbn);
 
 	}
 }

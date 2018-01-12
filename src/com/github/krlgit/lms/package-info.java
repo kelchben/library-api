@@ -1,4 +1,5 @@
 /**
+ * TODO: interfaces for public methods in package private classes?
  * 
  * This package contains classes for a very rudimentary library-managment system.
  * 
