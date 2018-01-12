@@ -7,20 +7,12 @@ public class LibraryTest {
 	Library myLib = new Library();
 
 	// try this
-	Patron p =  Library.buildPatron()
+	Patron p =  Library.patronBuilder()
 			.username("bla")
 			.birthdate(2012,5,3)
 			.build();
 
-	myLib.register(p);
-
-	myLib.requestItem(isbn, username);
-	myLib.checkoutItem(barcode, username);
-	myLib.returnItem(barcode);
-
-	myLib.listAllBooks();
-	myLib.whoHas(isbn);
-	myLib.timesBorrowed(isbn);
+	myLib.registerPatron(p);
 
 	myLib.registerPatron(new Patron.Builder() 
 			.username("krl")
@@ -30,7 +22,7 @@ public class LibraryTest {
 			.build()
 			);
 
-	myLib.registerBook(new BookDescription.Builder()  
+	myLib.registerCopyOf(new BookDescription.Builder()  
 			.isbn(Isbn.from("123456789X"))
 			.title("Holla")
 			.author("Miau")
