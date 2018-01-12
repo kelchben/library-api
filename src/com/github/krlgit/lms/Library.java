@@ -9,7 +9,8 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
-// TODO REFACTOR EVERYTHING: use Barcode as Key (Isbn is inside...) :(
+// TODO use Barcode as Key instead of Isbn (Isbn is inside...)?
+// but... how to handle BookEntries with no existing copies? special barcode?
 
 public class Library {
 	// TODO configuration should be passed to Library instance instead of static
