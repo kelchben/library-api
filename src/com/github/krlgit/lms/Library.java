@@ -23,7 +23,7 @@ public class Library {
 	private final Map<Isbn, BookEntry> catalog;
 	private final Map<Username, AccountEntry> accounts;
 
-	private final Deque<Isbn> shoppingList;
+	private final Set<Isbn> shoppingList;
 
 
 //=============================================================================//
@@ -44,7 +44,7 @@ public class Library {
 	public Library() {
 		this.catalog = new HashMap<>();
 		this.accounts = new HashMap<>();
-		this.shoppingList = new ArrayDeque<>();
+		this.shoppingList = new HashSet<>();
 	}
 
 // REGISTER ----------------------------------------------------->
@@ -116,7 +116,7 @@ public class Library {
 			   entry.addToRequests(patron) == entry.requestsNeeded() ) {  // addToRequests returns int 
 
 			entry.clearRequests();
-			shoppingList.push(isbn);
+			shoppingList.add(isbn);  
 			return true; 
 		 }
 
