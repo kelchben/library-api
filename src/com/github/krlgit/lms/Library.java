@@ -72,12 +72,19 @@ public class Library {
 		}
 
 		BookCopy copy = fetchEntry(barcode.isbn())
-			  	        .getCopyWith(barcode)
-			                .setIsCirculating(true)
-			                .appendCirculationHistory(account.patron());
+			  	        .getCopyWith(barcode);
+
+		if (copy.isCirculating()) {
+			throw new IllegalStateException(
+					"The copy " + barcode + " is not available. Borrowed by User " + copy.lastOwner().username());
+		}
+
+		copy.setIsCirculating(true) 
+		.appendCirculationHistory(account.patron());
 	
 		account.add(copy);
-		return true;
+
+		return true; // checkout succeded
 	}
 
 
