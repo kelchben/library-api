@@ -22,10 +22,7 @@ public class LibraryTest {
 	myLib.whoHas(isbn);
 	myLib.timesBorrowed(isbn);
 
-	myLib.lookupAccount(p.username()).checkout(barcode);
-
-
-	myLib.register(new Patron.Builder() 
+	myLib.registerPatron(new Patron.Builder() 
 			.username("krl")
 			.firstName("Karl")
 			.lastName("Misak")
@@ -33,13 +30,14 @@ public class LibraryTest {
 			.build()
 			);
 
-	myLib.register(new BookDescription.Builder()  
+	myLib.registerBook(new BookDescription.Builder()  
 			.isbn(Isbn.from("123456789X"))
 			.title("Holla")
 			.author("Miau")
 			.build()  
 			);
 
+	
 
 	}
 }

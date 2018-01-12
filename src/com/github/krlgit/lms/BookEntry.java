@@ -1,16 +1,18 @@
 package com.github.krlgit.lms;
 
+import java.util.ArrayDeque;
+import java.util.Set;
 import java.util.HashSet;
 import java.util.Set;
 
 // TODO refactor to interface: private class BookEntry implements Book Interface @override?
 
-public class BookEntry {
+class BookEntry {
 
 	private final BookDescription description;
 	private final Set<BookCopy> copies;
-	private final int requests;
-
+	private final Set<Patron> requests;
+	private int requestsNeeded;
 
 	final static BookEntry from(BookDescription description) {
 		return new BookEntry(description);
@@ -20,7 +22,8 @@ public class BookEntry {
 	private BookEntry(BookDescription description) {
 		this.description = description;
 		copies = new HashSet<>();
-		requests = 0;
+		requests = new HashSet<>() ;
+		requestsNeeded = 0;
 	}
 
 	public final BookCopy addBookCopy() {
@@ -51,22 +54,34 @@ public class BookEntry {
 		return false;
 	}
 
+	final BookCopy getCopyWith(Barcode barcode) {
+		for (BookCopy copy : copies) {
+			if (copy.barcode().equals(barcode)) {
+				return copy;
+			}
+		}
+		throw new IllegalArgumentException(
+				"No copy of \"" + description.title() + "\" with Barcode: " + barcode + " found.");
+	}
 
-	final BookCopy getCopy() {
+	final BookCopy getFirstAvailableCopy() {
 		for (BookCopy copy : copies) {
 			if (!(copy.isCirculating()))
 					return copy;
 		}
-		throw new IllegalStateException("No copy of " + description.title() + " is available.");
+		throw new IllegalStateException(
+				"No copy of " + description.title() + " is available.");
 	}
 
 	// should return boolean?
-	final boolean addCopy() {
-		return copies.add(new BookCopy(description, generateBarcode()));
+	final BookEntry addCopy() {
+		copies.add(new BookCopy(description, generateBarcode()));
+		return this;
 	}
 
-	final boolean removeCopy(BookCopy copy) {
-		return copies.remove(copy);
+	final BookEntry removeCopy(BookCopy copy) {
+		copies.remove(copy);
+		return this;
 	}
 
 	final BookDescription bookDescription() {
@@ -76,6 +91,28 @@ public class BookEntry {
 	private final Barcode generateBarcode() {
 		return new Barcode(description.isbn(), copies.size() + 1);
 	}
+
+
+	final BookEntry setRequestsNeeded(int n) {
+		requestsNeeded = n;
+		return this;
+	}
+
+	final int requestsNeeded() {
+		return Integer.valueOf(requestsNeeded);
+	}
+
+
+	final int addToRequests(Patron patron) {
+		requests.add(patron); 
+		return requests.size();
+	}
+
+	final BookEntry clearRequests() {
+		requests.clear();
+		return this;
+	}
+
 
 }
 

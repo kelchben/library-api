@@ -1,16 +1,28 @@
 package com.github.krlgit.lms;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
+// TODO REFACTOR EVERYTHING: use Barcode as Key (Isbn is inside...) :(
+
 public class Library {
-    private static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
+	// TODO configuration should be passed to Library instance instead of static
+    public static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
 	public static final int BOOKS_ALLOWED_PER_PATRON = 10;
+	public static final int REQUESTS_FOR_AQUISITION = 5;
+	public static final int REQUESTS_FOR_RESTOCKING = 2;
+
 
 	private final Map<Isbn, BookEntry> catalog;
 	private final Map<Username, AccountEntry> accounts;
+
+	private final Deque<Isbn> shoppingList;
 
 
 //=============================================================================//
@@ -31,50 +43,87 @@ public class Library {
 	public Library() {
 		this.catalog = new HashMap<>();
 		this.accounts = new HashMap<>();
+		this.shoppingList = new ArrayDeque<>();
 	}
 
 // REGISTER ----------------------------------------------------->
 
 	public final Barcode registerCopyOf(BookDescription descr) {
-		return register(descr)
+		return createEntry(descr)
 			   .addBookCopy()
 			   .barcode();
 	}
 
 	public final Username registerPatron(Patron patron) {
-		return register(patron)
+		return createEntry(patron)
 			   .patron()
 			   .username();
 	}
 
 // CHECKOUT / RETURN / REQUEST ----------------------------------->
 
-	public final boolean checkoutItem(Barcode barcode, Username username) {
-		Isbn isbn = barcode.isbn();
-		
-	}
+	public final boolean checkoutItem(Barcode barcode, Username username) 
+			throws IllegalArgumentException {
 
-	public final boolean checkoutItem( isbn, String username) {
-		
-	}
-
-
-	private final BookCopy checkout(Isbn isbn, Username username) {
-		AccountEntry account = account(username);
+		AccountEntry account = fetchEntry(username);
 
 		if (account.isAtCapacity(BOOKS_ALLOWED_PER_PATRON)) {
-			throw new IllegalStateException(
-					"User: " + username + " is at capacity (" + BOOKS_ALLOWED_PER_PATRON + " Books allowed).");
+		return false;  // checkout failed: account at limit
 		}
 
-		BookEntry entry = book(isbn);  // uglaaaay!
-	//TODO try? or hasCopy?	
-		BookCopy copy = entry.getCopy();
-
+		BookCopy copy = fetchEntry(barcode.isbn())
+			  	        .getCopyWith(barcode)
+			                .setIsCirculating(true)
+			                .appendCirculationHistory(account.patron());
+	
 		account.add(copy);
-		copy.appendToCirculationHistory(account.patron());
-		return copy;
+		return true;
 	}
+
+
+	public final boolean returnItem(Barcode barcode) {
+		BookCopy copy = fetchEntry(barcode.isbn())
+			        	.getCopyWith(barcode)
+			            	.setIsCirculating(false);
+
+		AccountEntry account = fetchEntry(copy.lastOwner().username())
+							    .remove(copy);
+
+		if (copy.isAtCapacity(TIMES_BORROWED_BEFORE_REMOVAL)) {
+			fetchEntry(barcode.isbn())
+			.removeCopy(copy)
+			.setRequestsNeeded(REQUESTS_FOR_RESTOCKING);
+			return false;  // book removed from system
+		}
+
+		return true;
+	}
+
+	// TODO move comments to doc
+	public final boolean requestExistingItem(Isbn isbn, Username username) {
+		Patron patron = fetchEntry(username).patron();
+		BookEntry entry = fetchEntry(isbn);
+
+		 if ( !entry.hasAvailableCopy() &&  // books can only be requested when there's no copy available
+			   entry.addToRequests(patron) == entry.requestsNeeded() ) {  // addToRequests returns int 
+
+			entry.clearRequests();
+			shoppingList.push(isbn);
+			return true; 
+		 }
+
+		 return false;
+	}
+
+	public final void requestNewItem(BookDescription description, Username username) {
+		createEntry(description)  // throws IllegalArgumentException when isbn already in system
+		.setRequestsNeeded(REQUESTS_FOR_AQUISITION)
+		.addToRequests(fetchEntry(username).patron());  // set takes care of duplicates
+	}
+
+
+
+
 
 // QUERY --------------------------------------------------------->
 
@@ -87,7 +136,7 @@ public class Library {
 
 // REGISTER ------------------------------------------------------>
 
-	private final BookEntry register(BookDescription description) {
+	private final BookEntry createEntry(BookDescription description) {
 		Isbn isbn = description.isbn();
 
 		if (catalog.containsKey(isbn)) {
@@ -101,7 +150,7 @@ public class Library {
 
 
     // TODO overload with extra bool for "unsave" adding (without Patron==Patron check)
-	private final AccountEntry register(Patron unregisteredPatron) {
+	private final AccountEntry createEntry(Patron unregisteredPatron) {
 		Username username = unregisteredPatron.username();
 
 		if (accounts.containsKey(username)) {
@@ -134,10 +183,10 @@ public class Library {
 
 	// overload "lookup" ? lookupAccount? does this even work without static library?
 	private final AccountEntry account(String username) {
-		return account(Username.from(username));
+		return fetchEntry(Username.from(username));
 	}
 
-	private final AccountEntry account(Username usr) {
+	private final AccountEntry fetchEntry(Username usr) {
 		try {
 		return accounts.get(usr);
 		} catch(NullPointerException e) {
@@ -147,10 +196,10 @@ public class Library {
 	}
 
 	private final BookEntry book(String isbn) {
-		return book(Isbn.from(isbn));
+		return fetchEntry(Isbn.from(isbn));
 	}
 
-	private final BookEntry book(Isbn isbn) {
+	private final BookEntry fetchEntry(Isbn isbn) {
 		try {
 		return catalog.get(isbn);
 		} catch(NullPointerException e) {

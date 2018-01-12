@@ -9,7 +9,7 @@ public class AccountEntry {
 	// username should be here, conceptually? grr...
 	private final Patron patron;
 	private final Set<BookCopy> currentlyBorrowed;
-	private final Set<Isbn> requests;
+	// private final Set<Isbn> requests;
 
 	static final AccountEntry from(Patron patron) {
 		return new AccountEntry(patron);
@@ -18,7 +18,6 @@ public class AccountEntry {
 	private AccountEntry(Patron patron) {
 		this.patron = patron;
 		this.currentlyBorrowed = new HashSet<>();
-		this.requests = new HashSet<>();
 	}
 
 	public final Patron patron() {
@@ -30,10 +29,15 @@ public class AccountEntry {
 		return currentlyBorrowed.size() >= BOOKS_ALLOWED;
 	}
 
-	final boolean add(BookCopy copy) {
-		return currentlyBorrowed.add(copy);
+	final AccountEntry add(BookCopy copy) { 
+		currentlyBorrowed.add(copy);
+		return this;
 	}
 
+	final AccountEntry remove(BookCopy copy) {
+		currentlyBorrowed.add(copy);
+		return this;
+	}
 
 // TODO remove? not working like that without dependency on static Collections
 //	public final AccountEntry borrowBook(BookEntry book) {
