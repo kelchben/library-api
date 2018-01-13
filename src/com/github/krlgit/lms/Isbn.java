@@ -1,7 +1,7 @@
 package com.github.krlgit.lms;
 
 // TODO this should probably only be a static helper class for validatin and Isbn stored as String
-public class Isbn {
+public final class Isbn {
 	private final String isbn;
 
 	public static boolean isValid(String str) {
@@ -15,13 +15,14 @@ public class Isbn {
 		return true;
 	}
 
-	public static Isbn stripFrom(String hyphenatedStr) {
-	  String str = hyphenatedStr.replaceAll("-", "");
-	  return from(str);
-	}
+//	public static Isbn stripFrom(String hyphenatedStr) {
+//	  String str = hyphenatedStr.replaceAll("-", "");
+//	  return from(str);
+//	}
 
 
-	public static Isbn from(String str) throws IllegalArgumentException {
+	public static Isbn from(String isbn) {
+	  String str  = isbn.replaceAll("-", "");  // strip "-"
 		if (isValid(str)) {
 			return new Isbn(str);
 		}

@@ -24,11 +24,10 @@ public class Library {
 	private final Map<Username, AccountEntry> accounts;
 	private final Set<Isbn> shoppingList;
 
+
 //=============================================================================//
 //                                   API                                       //
 //=============================================================================//
-
-
 
 
 // CREATE ------------------------------------------------------>
@@ -147,7 +146,6 @@ public class Library {
 	 *  Placeholder for Methods getting Patrons, Books. 
 	 *  Patron<->AccountEntry should be refactored/merged first, with appropiate Interface
 	 */
-
 
 // *SPECIAL QUERIES DEMANDED BY HOMEWORK ASSIGNMENT* ----------------------------->
 

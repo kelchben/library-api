@@ -1,7 +1,7 @@
 package com.github.krlgit.lms;
 
 // TODO refactor: Barcodes should just be strings?
-class Barcode {
+public final class Barcode {
 	// final byte type // (patron or book)
 	// final byte libraryId;
 	// final int bookId;  
@@ -9,11 +9,20 @@ class Barcode {
 	private final int copyId;   // use byte, short?
 
 	public static Barcode from(String barcode) {
-	    // TODO! 	
-		return null;
+		if (barcode.length() > 13 + 10 ) { // max digits: 13 (isbn) + 10 (int copyId) 
+			throw new  IllegalArgumentException(
+					"Input too long (" + barcode.length() + " digits of 23 allowed). Input was: \n" + barcode);
+		}
+		String[] param = barcode.split(":");
+		return new Barcode(Isbn.from(param[0]),
+				Integer.valueOf(param[1]));
 	}
 
-    Barcode(Isbn isbn, int copyId) {
+	public static Barcode from(Isbn isbn, int copyId) {
+		return new Barcode(isbn, copyId);
+	}
+
+    private Barcode(Isbn isbn, int copyId) {
 		this.isbn = isbn; 
 		this.copyId = copyId;
 	}

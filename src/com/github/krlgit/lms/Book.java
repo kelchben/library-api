@@ -14,5 +14,5 @@ public interface Book {
 	public Barcode barcode();
 
 	public Patron lastOwner();
-
+	
 }

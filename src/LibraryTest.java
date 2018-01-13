@@ -13,8 +13,10 @@ public class LibraryTest {
 	Library myLib = new Library();
 	Library library = new Library();
 
-	// try this
-	library.register(Patron.with().username("xyz").firstName("xxx").build());
+	library.register(Patron.with().
+			username("xyz").
+			firstName("xxx").
+			build());
 
 	Patron p = Patron.with()
 			.username("Buntspecccht")
@@ -25,7 +27,6 @@ public class LibraryTest {
 
 	myLib.register(p);
 
-
 	myLib.register(Patron.with()  // with vs build... ? has to be consistent with Book.buildDescription
 			.username("krl")
 			.firstName("Karl")
@@ -35,27 +36,30 @@ public class LibraryTest {
 			);
 
 
-	myLib.register(Book.with()
-			.isbn(Isbn.from("123456789X"))    
+	myLib.register(BookDescription.with() // BookDescription For Symmetry? Book for readability?
+			.isbn("123456789X")   
 			.title("Holzige Holothurien")
 			.author("Hans Hobel")
 			.build()  
 			);
 
-	myLib.register(Book.with()
-			.isbn(Isbn.from("1234567893"))    
+	myLib.register(Book.with() 
+			.isbn("1234567893")    
 			.title("Mi mi mi")
 			.author("O. Opera")
 			.build()  
 			);
 
-	myLib.registerAdditionalCopy(Isbn.from("123456789X"));
+	myLib.registerAdditionalCopy("123456789X");
 
 	myLib.register(Book.with()
-			.isbn(Isbn.stripFrom("1111-2222-4444-3")).title("Brudermord").author("Kain Able").build());
+			.isbn("1111-2222-4444-3")
+			.title("Brudermord")
+			.author("Kain Able")
+			.build());
 
 	myLib.register(Book.with()
-			.isbn(Isbn.stripFrom("3333-1111-4444-6"))
+			.isbn("3333-1111-4444-6")
 			.title("Dampfschifffahrt leicht gemacht")
 			.author("Spina Topp")
 			.build()  
@@ -65,7 +69,7 @@ public class LibraryTest {
 
 	// TODO this sucks! return arraylist not collection
 	// TODO DIRECT STRING ENTRY
-	List<Book> mycopies = new ArrayList<Book>(myLib.getAllCopies(Isbn.from("123456789X")));
+	List<Book> mycopies = new ArrayList<Book>(myLib.getAllCopies("123456789X"));
 
 	Book mycopy = mycopies.get(0);
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 // TODO refactor to interface: private class BookEntry implements Book Interface @override?
 
-class BookEntry {
+final class BookEntry {
 
 	private final BookDescription description;
 	private final Set<BookCopy> copies;
@@ -93,7 +93,7 @@ class BookEntry {
 	}
 
 	private final Barcode generateBarcode() {
-		return new Barcode(description.isbn(), copies.size() + 1);
+		return Barcode.from(description.isbn(), copies.size() + 1);
 	}
 
 

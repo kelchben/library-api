@@ -3,6 +3,7 @@ package com.github.krlgit.lms;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
+// TODO THIS IS DESIGNED FOR INHERITANCE
 public final class Patron {
 	private final Username username;
 	private final String firstName;

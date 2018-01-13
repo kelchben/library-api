@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 // TODO refactor this to an interface
-public class AccountEntry {
+public final class AccountEntry {
 
 	// username should be here, conceptually? grr...
 	private final Patron patron;
