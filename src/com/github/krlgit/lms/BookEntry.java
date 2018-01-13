@@ -27,7 +27,7 @@ class BookEntry {
 	}
 
 	public final Set<BookCopy> copies() {
-		return new HashSet<>(copies);
+		return new HashSet<BookCopy>(copies);
 	}
 
 	public final BookCopy addBookCopy() {

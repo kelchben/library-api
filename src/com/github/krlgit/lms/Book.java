@@ -9,4 +9,10 @@ public interface Book {
 		return new BookDescription.Builder();
 	}
 
+	public boolean isCirculating();
+
+	public Barcode barcode();
+
+	public Patron lastOwner();
+
 }

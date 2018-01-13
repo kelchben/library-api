@@ -1,3 +1,5 @@
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
@@ -12,58 +14,60 @@ public class LibraryTest {
 	Library library = new Library();
 
 	// try this
-	library.register(Patron.with().username("xyz").firstName("xxx").create());
+	library.register(Patron.with().username("xyz").firstName("xxx").build());
 
 	Patron p = Patron.with()
 			.username("Buntspecccht")
 			.firstName("Merle")
 			.lastName("Spockstadt")
 			.birthdate(2012,5,3)
-			.create();
+			.build();
 
 	myLib.register(p);
 
-	myLib.register(Patron.with() 
+
+	myLib.register(Patron.with()  // with vs build... ? has to be consistent with Book.buildDescription
 			.username("krl")
 			.firstName("Karl")
 			.lastName("Misak")
 			.birthdate(2012, 7, 1)
-			.create()
+			.build()
 			);
+
 
 	myLib.register(Book.with()
 			.isbn(Isbn.from("123456789X"))    
 			.title("Holzige Holothurien")
 			.author("Hans Hobel")
-			.create()  
+			.build()  
 			);
 
 	myLib.register(Book.with()
 			.isbn(Isbn.from("1234567893"))    
 			.title("Mi mi mi")
 			.author("O. Opera")
-			.create()  
+			.build()  
 			);
 
 	myLib.registerCopy("123456789X");
 
 	myLib.register(Book.with()
-			.isbn(Isbn.stripFrom("1111-2222-4444-3")).title("Brudermord").author("Kain Able").create());
+			.isbn(Isbn.stripFrom("1111-2222-4444-3")).title("Brudermord").author("Kain Able").build());
 
 	myLib.register(Book.with()
 			.isbn(Isbn.stripFrom("3333-1111-4444-6"))
 			.title("Dampfschifffahrt leicht gemacht")
 			.author("Spina Topp")
-			.create()  
+			.build()  
 			);
 
 	// myLib.checkoutItem("123456789X:2", "krl");
 
 	// TODO this sucks! return arraylist not collection
 	// TODO DIRECT STRING ENTRY
-	Set<BookCopy> mycopies = myLib.getAllCopies("123456789X");
+	Set<Book> mycopies = myLib.getAllCopies("123456789X");
 
-	BookCopy mycopy = (BookCopy)mycopies.toArray()[0] ;
+	Book mycopy = (Book)mycopies.toArray()[0] ;
 
 	myLib.checkoutItem(mycopy.barcode(), Username.from("krl"));
 	myLib.returnItem(mycopy.barcode());
@@ -73,7 +77,7 @@ public class LibraryTest {
 
 	
 	//mycopies[0].
-	for (BookCopy copy : mycopies) {
+	for (Book copy : mycopies) {
 		System.out.println(copy);
 	}
 

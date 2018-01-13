@@ -1,9 +1,11 @@
 package com.github.krlgit.lms;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -174,13 +176,22 @@ public class Library {
 		return getRequestsAsInt(Isbn.from(isbn));
 	}
 
-	public final Set<BookCopy> getAllCopies(Isbn isbn) {
-		return fetchEntry(isbn).copies();
+//	public final List<Book> getAllCopies(Isbn isbn) {  
+//		Set<BookCopy> copies = fetchEntry(isbn).copies();
+//		return new ArrayList<Book>(copies); // return only interface type Book to client
+//	}
+//	public final List<Book> getAllCopies(String isbn) {
+//		return getAllCopies(Isbn.from(isbn));
+//	}
+
+	@SuppressWarnings("unchecked") 
+	public final Set<Book> getAllCopies(Isbn isbn) {  
+		return (Set<Book>)(Set<?>)fetchEntry(isbn).copies(); // hacky unchecked double cast - find a better way with generics
+
 	}
-	public final Set<BookCopy> getAllCopies(String isbn) {
+	public final Set<Book> getAllCopies(String isbn) {
 		return getAllCopies(Isbn.from(isbn));
 	}
-
 
 	//=============================================================================//
 	//                            IMPLEMENTATION                                   //

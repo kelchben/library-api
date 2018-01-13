@@ -3,7 +3,7 @@ package com.github.krlgit.lms;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class BookCopy implements Book {
+class BookCopy implements Book {
 	private final Barcode barcode;
 	private final BookDescription description;  // needed? can get this through barcode/isbn with query
 	private final Deque<Patron> circulationHistory;
@@ -30,6 +30,7 @@ public class BookCopy implements Book {
 		return this;
 	}
 
+	@Override
 	public final Barcode barcode() {
 		return barcode;
 	}
@@ -42,6 +43,7 @@ public class BookCopy implements Book {
 		return new ArrayDeque<>(circulationHistory);  // defensive copy
 	}
 
+	@Override
 	public final Patron lastOwner() {
 		return circulationHistory.peek();
 	}

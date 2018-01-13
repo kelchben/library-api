@@ -48,7 +48,7 @@ public final class Patron {
 			return this;
 		}
 		
-		public Patron create() {  // build
+		public Patron build() {  // create?
 			// TODO validation for all parameters
 			return new Patron(this);
 		}

@@ -22,7 +22,7 @@ public class BookDescription {
 			public Builder title(String title) { this.title = title; return this; }
 			public Builder author(String author) { this.author = author; return this; }
 
-			public BookDescription create() {  // build
+			public BookDescription build() {  // create? submit?  --> no. every programmer knows build, this is not for endusers
 				return new BookDescription(this);
 			}
 
