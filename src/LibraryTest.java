@@ -49,7 +49,7 @@ public class LibraryTest {
 			.build()  
 			);
 
-	myLib.registerCopy("123456789X");
+	myLib.registerAdditionalCopy(Isbn.from("123456789X"));
 
 	myLib.register(Book.with()
 			.isbn(Isbn.stripFrom("1111-2222-4444-3")).title("Brudermord").author("Kain Able").build());
@@ -65,9 +65,9 @@ public class LibraryTest {
 
 	// TODO this sucks! return arraylist not collection
 	// TODO DIRECT STRING ENTRY
-	Set<Book> mycopies = myLib.getAllCopies("123456789X");
+	List<Book> mycopies = new ArrayList<Book>(myLib.getAllCopies(Isbn.from("123456789X")));
 
-	Book mycopy = (Book)mycopies.toArray()[0] ;
+	Book mycopy = mycopies.get(0);
 
 	myLib.checkoutItem(mycopy.barcode(), Username.from("krl"));
 	myLib.returnItem(mycopy.barcode());

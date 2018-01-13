@@ -1,9 +1,9 @@
 package com.github.krlgit.lms;
 
-import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 // TODO refactor to interface: private class BookEntry implements Book Interface @override?
 
@@ -26,8 +26,8 @@ class BookEntry {
 		requestsNeeded = 0;
 	}
 
-	public final Set<BookCopy> copies() {
-		return new HashSet<BookCopy>(copies);
+	public final List<BookCopy> copies() {
+		return new ArrayList<BookCopy>(copies);
 	}
 
 	public final BookCopy addBookCopy() {
@@ -117,8 +117,8 @@ class BookEntry {
 		return this;
 	}
 
-	final Set<Patron> requests() {
-		return new HashSet<>(requests);
+	final List<Patron> requests() {
+		return new ArrayList<>(requests);
 	}
 
 	@Override

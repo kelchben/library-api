@@ -8,7 +8,7 @@ class Barcode {
 	private final Isbn isbn;
 	private final int copyId;   // use byte, short?
 
-	public static String from(String barcode) {
+	public static Barcode from(String barcode) {
 	    // TODO! 	
 		return null;
 	}

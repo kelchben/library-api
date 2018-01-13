@@ -13,22 +13,22 @@ import java.util.Set;
 // but... how to handle BookEntries with no existing copies? special barcode?
 
 public class Library {
-	// TODO configuration should be passed to Library instance instead of static
-    public static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
-	public static final int BOOKS_ALLOWED_PER_PATRON = 10;
-	public static final int REQUESTS_FOR_AQUISITION = 5;
-	public static final int REQUESTS_FOR_RESTOCKING = 2;
 
+	// TODO configuration should be passed to Library instance instead of static
+    private static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
+	private static final int BOOKS_ALLOWED_PER_PATRON = 10;
+	private static final int REQUESTS_FOR_AQUISITION = 5;
+	private static final int REQUESTS_FOR_RESTOCKING = 2;
 
 	private final Map<Isbn, BookEntry> catalog;
 	private final Map<Username, AccountEntry> accounts;
-
 	private final Set<Isbn> shoppingList;
-
 
 //=============================================================================//
 //                                   API                                       //
 //=============================================================================//
+
+
 
 
 // CREATE ------------------------------------------------------>
@@ -53,23 +53,19 @@ public class Library {
 			   .barcode();
 	}
 
-	public final Barcode registerNewCopy(Isbn isbn) {
+	public final Barcode registerAdditionalCopy(Isbn isbn) {
 		return fetchEntry(isbn)
 				.addBookCopy()
 				.barcode();
 	}
 
-	//TODO  put all to String adapters in extra section OR make generic adapter?
-	// OR only use Strings as input! <----
-	public final Barcode registerCopy(String isbn) {
-		return registerNewCopy(Isbn.from(isbn));
-	}
 
 // CHECKOUT / RETURN / REQUEST ----------------------------------->
 
 //	public final boolean checkoutItem(String barcode, String username) {
 //		return checkoutItem(Barcode.from(barcode), Isbn.from(barcode));
 //	}
+
 
 	public final boolean checkoutItem(Barcode barcode, Username username) 
 			throws IllegalArgumentException {
@@ -103,7 +99,7 @@ public class Library {
 			            	.setIsCirculating(false);
 
 		AccountEntry account = fetchEntry(copy.lastOwner().username())
-							    .remove(copy);
+							   .remove(copy);
 
 		if (copy.isAtCapacity(TIMES_BORROWED_BEFORE_REMOVAL)) {
 			fetchEntry(barcode.isbn())
@@ -115,14 +111,14 @@ public class Library {
 		return true;
 	}
 
-	// TODO move comments to doc
+
 	public final boolean requestExistingItem(Isbn isbn, Username username) {
 		Patron patron = fetchEntry(username).patron();
 		BookEntry entry = fetchEntry(isbn);
 
 		 if ( !shoppingList.contains(isbn) && 
 			  !entry.hasAvailableCopy() &&  
-			   entry.addToRequests(patron) == entry.requestsNeeded() ) {  
+			   entry.addToRequests(patron) == entry.requestsNeeded() ) { // addToRequests returns requests.size( 
 
 			entry.clearRequests();
 			shoppingList.add(isbn);  
@@ -132,18 +128,35 @@ public class Library {
 		 return false;
 	}
 
-	public final void requestNewItem(BookDescription description, Username username) {
+	public final boolean requestNewItem(BookDescription description, Username username) {
+		try {
 		 createEntry(description)  // throws IllegalArgumentException when isbn already in system
 		.setRequestsNeeded(REQUESTS_FOR_AQUISITION)
 		.addToRequests(fetchEntry(username).patron());  // set takes care of duplicates
+		 return true;  
+
+		} catch(IllegalArgumentException e) {
+			return false; // request failed
+		}
 	}
 
 
-// QUERY --------------------------------------------------------->
+// QUERY ----------------------------------------------------------------->
 
-	public final Collection<BookEntry> getAllBookEntries() {
-		return catalog.values();
+	/* 
+	 *  Placeholder for Methods getting Patrons, Books. 
+	 *  Patron<->AccountEntry should be refactored/merged first, with appropiate Interface
+	 */
+
+
+// *SPECIAL QUERIES DEMANDED BY HOMEWORK ASSIGNMENT* ----------------------------->
+
+
+	public final List<BookEntry> getAllBookEntries() {  
+//		return catalog.values();  // bad, new collection is backed by map (map can be changed)!
+		return new ArrayList<BookEntry>(catalog.values());  // devensive copy vs performance? 
 	}
+
 
 	public final Map<Barcode, Patron> getCurrentOwners(Isbn isbn) {
 		Map<Barcode, Patron> owners = new HashMap<>();
@@ -156,42 +169,46 @@ public class Library {
 		return owners;
 	}
 
-	public final Deque<Patron> getCirculationHistory(Barcode barcode) {
+
+	public final List<Patron> getCirculationHistory(Barcode barcode) {
 		return fetchEntry(barcode.isbn())
 				.getCopyWith(barcode)
 				.circulationHistory();
 
 	}
 
-	public final Set<Patron> requestsList(Isbn isbn) {
+
+	public final List<Patron> getRequestsList(Isbn isbn) {
 		return fetchEntry(isbn)
 				.requests();
 	}
 
+
 	public final int getRequestsAsInt(Isbn isbn) {
-		return requestsList(isbn)
+		return getRequestsList(isbn)
 				.size();
 	}
-	public final int getRequestsAsInt(String isbn) {
-		return getRequestsAsInt(Isbn.from(isbn));
-	}
 
-//	public final List<Book> getAllCopies(Isbn isbn) {  
-//		Set<BookCopy> copies = fetchEntry(isbn).copies();
-//		return new ArrayList<Book>(copies); // return only interface type Book to client
-//	}
-//	public final List<Book> getAllCopies(String isbn) {
-//		return getAllCopies(Isbn.from(isbn));
-//	}
 
 	@SuppressWarnings("unchecked") 
-	public final Set<Book> getAllCopies(Isbn isbn) {  
-		return (Set<Book>)(Set<?>)fetchEntry(isbn).copies(); // hacky unchecked double cast - find a better way with generics
+	public final List<Book> getAllCopies(Isbn isbn) {  
+		return (List<Book>)(List<?>)fetchEntry(isbn).copies(); // hacky unchecked double cast - find a better way with generics
 
 	}
-	public final Set<Book> getAllCopies(String isbn) {
-		return getAllCopies(Isbn.from(isbn));
-	}
+
+// STRING ADAPTERS FOR CONVENIENCE --------------------------------------------------->
+
+
+	public final Barcode registerAdditionalCopy(String isbn) { return registerAdditionalCopy(Isbn.from(isbn)); }
+	public final boolean checkoutItem(String barcode, String username) { return checkoutItem(Barcode.from(barcode), Username.from(username)); }
+	public final boolean returnItem(String barcode) { return returnItem(Barcode.from(barcode)); }
+	public final boolean requestExistingItem(String isbn, String username) { return requestExistingItem(Isbn.from(isbn), Username.from(username)); }
+	public final boolean requestNewItem(BookDescription description, String username) { return requestNewItem(description, Username.from(username)); }
+	public final Map<Barcode, Patron> getCurrentOwners(String isbn) { return getCurrentOwners(Isbn.from(isbn)); }
+	public final List<Patron> getCirculationHistory(String barcode) { return getCirculationHistory(Barcode.from(barcode)); }
+	public final List<Book> getAllCopies(String isbn) { return getAllCopies(Isbn.from(isbn)); }
+	public final List<Patron> getRequestsList(String isbn) { return getRequestsList(Isbn.from(isbn)); }
+	public final int getRequestsAsInt(String isbn) { return getRequestsAsInt(Isbn.from(isbn)); }
 
 	//=============================================================================//
 	//                            IMPLEMENTATION                                   //

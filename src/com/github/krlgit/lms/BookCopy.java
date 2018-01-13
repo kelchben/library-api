@@ -1,7 +1,9 @@
 package com.github.krlgit.lms;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 
 class BookCopy implements Book {
 	private final Barcode barcode;
@@ -39,8 +41,8 @@ class BookCopy implements Book {
 		return description;
 	}
 
-	public final Deque<Patron> circulationHistory() {
-		return new ArrayDeque<>(circulationHistory);  // defensive copy
+	public final List<Patron> circulationHistory() {
+		return new ArrayList<>(circulationHistory);  // defensive copy
 	}
 
 	@Override
