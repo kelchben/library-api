@@ -7,6 +7,7 @@ public class BookDescription {
 		private final String title;
 		private final String author;
 
+
 		public static class Builder {
 			// Required parameters
 			private Isbn isbn;
@@ -21,7 +22,7 @@ public class BookDescription {
 			public Builder title(String title) { this.title = title; return this; }
 			public Builder author(String author) { this.author = author; return this; }
 
-			public BookDescription build() {
+			public BookDescription create() {  // build
 				return new BookDescription(this);
 			}
 

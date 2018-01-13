@@ -9,60 +9,59 @@ public class LibraryTest {
 	public static void main(String[] args) {
 
 	Library myLib = new Library();
+	Library library = new Library();
 
 	// try this
-	Patron p =  Library.patronBuilder()
+	library.register(User.with().username("xyz").firstName("xxx").submit());
+
+	Patron p = Patron.with()
 			.username("Buntspecccht")
 			.firstName("Merle")
 			.lastName("Spockstadt")
 			.birthdate(2012,5,3)
-			.build();
+			.create();
 
-	myLib.registerPatron(p);
+	myLib.register(p);
 
-	myLib.registerPatron(new Patron.Builder() 
+	myLib.register(User.with() 
 			.username("krl")
 			.firstName("Karl")
 			.lastName("Misak")
 			.birthdate(2012, 7, 1)
-			.build()
+			.create()
 			);
 
-	myLib.registerBook(new BookDescription.Builder()  
+	myLib.register(Book.with()
 			.isbn(Isbn.from("123456789X"))    
 			.title("Holzige Holothurien")
 			.author("Hans Hobel")
-			.build()  
+			.create()  
 			);
 
-	myLib.registerBook(new BookDescription.Builder()  
+	myLib.register(Book.with()
 			.isbn(Isbn.from("1234567893"))    
 			.title("Mi mi mi")
 			.author("O. Opera")
-			.build()  
+			.create()  
 			);
 
 	myLib.registerCopy("123456789X");
 
-	myLib.registerBook(new BookDescription.Builder()  
-			.isbn(Isbn.stripFrom("1111-2222-4444-3"))
-			.title("Brudermord")
-			.author("Kain Able")
-			.build()  
-			);
+	myLib.register(Book.with()
+			.isbn(Isbn.stripFrom("1111-2222-4444-3")).title("Brudermord").author("Kain Able").build());
 
-	myLib.registerBook(new BookDescription.Builder()  
+	myLib.register(Book.with()
 			.isbn(Isbn.stripFrom("3333-1111-4444-6"))
 			.title("Dampfschifffahrt leicht gemacht")
 			.author("Spina Topp")
-			.build()  
+			.create()  
 			);
 
 	// myLib.checkoutItem("123456789X:2", "krl");
 
 	// TODO this sucks! return arraylist not collection
 	// TODO DIRECT STRING ENTRY
-	Set<BookCopy> mycopies = myLib.getAllCopies("123456789X");
+	Set<Book> mycopies = myLib.getAllCopies("123456789X");
 
 	BookCopy mycopy = (BookCopy)(mycopies.toArray())[0] ;
 

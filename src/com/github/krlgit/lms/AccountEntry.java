@@ -7,21 +7,21 @@ import java.util.Set;
 public class AccountEntry {
 
 	// username should be here, conceptually? grr...
-	private final Patron patron;
+	private final User user;
 	private final Set<BookCopy> currentlyBorrowed;
 	// private final Set<Isbn> requests;
 
-	static final AccountEntry from(Patron patron) {
-		return new AccountEntry(patron);
+	static final AccountEntry from(User user) {
+		return new AccountEntry(user);
 	}
 
-	private AccountEntry(Patron patron) {
-		this.patron = patron;
+	private AccountEntry(User user) {
+		this.user = user;
 		this.currentlyBorrowed = new HashSet<>();
 	}
 
-	public final Patron patron() {
-		return patron;
+	public final User user() {
+		return user;
 	}
 
 
@@ -41,7 +41,7 @@ public class AccountEntry {
 
 	@Override
 	public String toString() {
-		return "Username: " + patron.username() + " | Currently borrowed Items: " + currentlyBorrowed.size();
+		return "Username: " + user.username() + " | Currently borrowed Items: " + currentlyBorrowed.size();
 		//TODO this prbly should be only username
 	}
 

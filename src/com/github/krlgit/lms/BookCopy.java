@@ -3,12 +3,11 @@ package com.github.krlgit.lms;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class BookCopy {
+class BookCopy implements Book {
 	private final Barcode barcode;
 	private final BookDescription description;  // needed? can get this through barcode/isbn with query
-	private final Deque<Patron> circulationHistory;
+	private final Deque<User> circulationHistory;
 	private boolean isCirculating;
-
 
 	BookCopy(BookDescription descr, Barcode barcode) {
 		this.barcode = barcode;
@@ -26,8 +25,8 @@ public class BookCopy {
 		return this;
 	}
 
-	final BookCopy appendCirculationHistory(Patron patron) {
-		circulationHistory.add(patron);
+	final BookCopy appendCirculationHistory(User user) {
+		circulationHistory.add(user);
 		return this;
 	}
 
@@ -39,11 +38,11 @@ public class BookCopy {
 		return description;
 	}
 
-	public final Deque<Patron> circulationHistory() {
+	public final Deque<User> circulationHistory() {
 		return new ArrayDeque<>(circulationHistory);  // defensive copy
 	}
 
-	public final Patron lastOwner() {
+	public final User lastOwner() {
 		return circulationHistory.peek();
 	}
 
