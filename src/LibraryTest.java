@@ -12,7 +12,7 @@ public class LibraryTest {
 	Library library = new Library();
 
 	// try this
-	library.register(User.with().username("xyz").firstName("xxx").submit());
+	library.register(Patron.with().username("xyz").firstName("xxx").create());
 
 	Patron p = Patron.with()
 			.username("Buntspecccht")
@@ -23,7 +23,7 @@ public class LibraryTest {
 
 	myLib.register(p);
 
-	myLib.register(User.with() 
+	myLib.register(Patron.with() 
 			.username("krl")
 			.firstName("Karl")
 			.lastName("Misak")
@@ -48,7 +48,7 @@ public class LibraryTest {
 	myLib.registerCopy("123456789X");
 
 	myLib.register(Book.with()
-			.isbn(Isbn.stripFrom("1111-2222-4444-3")).title("Brudermord").author("Kain Able").build());
+			.isbn(Isbn.stripFrom("1111-2222-4444-3")).title("Brudermord").author("Kain Able").create());
 
 	myLib.register(Book.with()
 			.isbn(Isbn.stripFrom("3333-1111-4444-6"))
@@ -61,9 +61,9 @@ public class LibraryTest {
 
 	// TODO this sucks! return arraylist not collection
 	// TODO DIRECT STRING ENTRY
-	Set<Book> mycopies = myLib.getAllCopies("123456789X");
+	Set<BookCopy> mycopies = myLib.getAllCopies("123456789X");
 
-	BookCopy mycopy = (BookCopy)(mycopies.toArray())[0] ;
+	BookCopy mycopy = (BookCopy)mycopies.toArray()[0] ;
 
 	myLib.checkoutItem(mycopy.barcode(), Username.from("krl"));
 	myLib.returnItem(mycopy.barcode());

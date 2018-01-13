@@ -1,6 +1,7 @@
 package com.github.krlgit.lms;
 
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,14 +31,6 @@ public class Library {
 
 // CREATE ------------------------------------------------------>
 
-	public static final BookDescription.Builder bookBuilder() {
-		return new BookDescription.Builder();
-	}
-
-	public static final User.Builder patronBuilder() {
-		return new User.Builder();
-	}
-
 	public Library() {
 		this.catalog = new HashMap<>();
 		this.accounts = new HashMap<>();
@@ -46,9 +39,9 @@ public class Library {
 
 // REGISTER ----------------------------------------------------->
 
-	public final Username register(User user) {
-		return createEntry(user)
-			   .user()
+	public final Username register(Patron patron) {
+		return createEntry(patron)
+			   .patron()
 			   .username();
 	}
 
@@ -90,11 +83,11 @@ public class Library {
 
 		if (copy.isCirculating()) {   // this should not be possible (duplicate barcode)
 			throw new IllegalStateException(    
-					"The copy " + barcode + " is not available. Borrowed by User " + copy.lastOwner().username());
+					"The copy " + barcode + " is not available. Borrowed by Patron " + copy.lastOwner().username());
 		}
 
 		copy.setIsCirculating(true) 
-		.appendCirculationHistory(account.user());
+		.appendCirculationHistory(account.patron());
 	
 		account.add(copy);
 
@@ -122,12 +115,12 @@ public class Library {
 
 	// TODO move comments to doc
 	public final boolean requestExistingItem(Isbn isbn, Username username) {
-		User user = fetchEntry(username).user();
+		Patron patron = fetchEntry(username).patron();
 		BookEntry entry = fetchEntry(isbn);
 
 		 if ( !shoppingList.contains(isbn) && 
 			  !entry.hasAvailableCopy() &&  
-			   entry.addToRequests(user) == entry.requestsNeeded() ) {  
+			   entry.addToRequests(patron) == entry.requestsNeeded() ) {  
 
 			entry.clearRequests();
 			shoppingList.add(isbn);  
@@ -140,7 +133,7 @@ public class Library {
 	public final void requestNewItem(BookDescription description, Username username) {
 		 createEntry(description)  // throws IllegalArgumentException when isbn already in system
 		.setRequestsNeeded(REQUESTS_FOR_AQUISITION)
-		.addToRequests(fetchEntry(username).user());  // set takes care of duplicates
+		.addToRequests(fetchEntry(username).patron());  // set takes care of duplicates
 	}
 
 
@@ -150,8 +143,8 @@ public class Library {
 		return catalog.values();
 	}
 
-	public final Map<Barcode, User> getCurrentOwners(Isbn isbn) {
-		Map<Barcode, User> owners = new HashMap<>();
+	public final Map<Barcode, Patron> getCurrentOwners(Isbn isbn) {
+		Map<Barcode, Patron> owners = new HashMap<>();
 
 		for (BookCopy copy : fetchEntry(isbn).copies()) {
 			if (copy.isCirculating()) {
@@ -161,14 +154,14 @@ public class Library {
 		return owners;
 	}
 
-	public final Collection<User> getCirculationHistory(Barcode barcode) {
+	public final Deque<Patron> getCirculationHistory(Barcode barcode) {
 		return fetchEntry(barcode.isbn())
 				.getCopyWith(barcode)
 				.circulationHistory();
 
 	}
 
-	public final Set<User> requestsList(Isbn isbn) {
+	public final Set<Patron> requestsList(Isbn isbn) {
 		return fetchEntry(isbn)
 				.requests();
 	}
@@ -203,7 +196,7 @@ public class Library {
 
 		if (catalog.containsKey(isbn)) {
 			throw new IllegalArgumentException(
-					"A Entry with Isbn " + isbn + " already exists in " + catalog);
+					"An Entry with Isbn " + isbn + " already exists in " + catalog);
 		}
 
 		catalog.put(isbn, BookEntry.from(description));
@@ -211,9 +204,9 @@ public class Library {
 	}
 
 
-	// TODO overload with extra bool for "unsave" adding (without User==User check)
-	private final AccountEntry createEntry(User unregisteredPatron) {
-		Username username = unregisteredPatron.username();
+	// TODO overload with extra bool for "unsave" adding (without Patron==Patron check)
+	private final AccountEntry createEntry(Patron unregisteredPatron) {
+		Username username = unregisteredPatron.username(); 
 
 		if (accounts.containsKey(username)) {
 			throw new IllegalArgumentException(
@@ -223,10 +216,10 @@ public class Library {
 		// check if patron already exists with different username (see patron.equals())
 		// -- costly? maybe CHECK database periodically instead?
 		for (Map.Entry<Username, AccountEntry> entry : accounts.entrySet()) {
-			User p = entry.getValue().user();
+			Patron p = entry.getValue().patron();
 			if (p.equals(unregisteredPatron)) {
 				throw new IllegalArgumentException(
-						"This User is already registered with Username: " + p.username());
+						"This Patron is already registered with Username: " + p.username());
 			}
 		}
 
@@ -263,11 +256,11 @@ public class Library {
 	}
 
 
-	private final User fetchPatron(String username) {
-		return fetchEntry(Username.from(username)).user();
+	private final Patron fetchUser(String username) {
+		return fetchEntry(Username.from(username)).patron();
 	}
 
-	private final BookDescription fetchBook(String isbn) {
+	private final BookDescription fetchBookDescription(String isbn) {
 		return fetchEntry(Isbn.from(isbn)).bookDescription();
 	}
 

@@ -1,7 +1,7 @@
 package com.github.krlgit.lms;
 
 /* 
- * TODO Restrict and Validate OR autogenerate from User Data?
+ * TODO Restrict and Validate OR autogenerate from Patron Data?
  * TODO Use it for caching hashCode?
  * TODO remove this class? replace with string?
  */

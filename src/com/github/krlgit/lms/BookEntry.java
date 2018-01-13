@@ -11,7 +11,7 @@ class BookEntry {
 
 	private final BookDescription description;
 	private final Set<BookCopy> copies;
-	private final Set<User> requests;
+	private final Set<Patron> requests;
 	private int requestsNeeded;
 
 	final static BookEntry from(BookDescription description) {
@@ -107,8 +107,8 @@ class BookEntry {
 	}
 
 
-	final int addToRequests(User user) {
-		requests.add(user); 
+	final int addToRequests(Patron patron) {
+		requests.add(patron); 
 		return requests.size();
 	}
 
@@ -117,7 +117,7 @@ class BookEntry {
 		return this;
 	}
 
-	final Set<User> requests() {
+	final Set<Patron> requests() {
 		return new HashSet<>(requests);
 	}
 
