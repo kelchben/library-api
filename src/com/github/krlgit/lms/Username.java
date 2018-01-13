@@ -5,7 +5,7 @@ package com.github.krlgit.lms;
  * TODO Use it for caching hashCode?
  * TODO remove this class? replace with string?
  */
-public class Username {
+public final class Username {
 	private final String username;
 
 

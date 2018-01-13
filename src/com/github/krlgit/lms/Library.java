@@ -12,7 +12,7 @@ import java.util.Set;
 // TODO use Barcode as Key instead of Isbn (Isbn is inside...)?
 // but... how to handle BookEntries with no existing copies? special barcode?
 
-public class Library {
+public final class Library {
 
 	// TODO configuration should be passed to Library instance instead of static
     private static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
