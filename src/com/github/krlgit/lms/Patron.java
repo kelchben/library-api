@@ -45,16 +45,26 @@ public final class Patron {
 			try {
 				birthdate = LocalDate.of(year, month, day);
 			} catch(DateTimeException cause) {
-				throw new IllegalArgumentException(cause);
+				throw new IllegalArgumentException("Cannot that date form these values" + cause);
 			}
 			return this;
 		}
 		
 		public Patron build() {  // create?
-			// TODO validation for all parameters
+			if (this.username != null) {
+				throw new IllegalStateException(
+						"Required parameter username is missing.");
+			}
+			if (this.firstName != null) {
+				throw new IllegalStateException(
+						"Required parameter firstName is missing");
+			}
+			if (this.birthdate != null) {
+				throw new IllegalStateException(
+						"Required parameter birthdate is missing");
+			}
 			return new Patron(this);
 		}
-
 
 	}
 

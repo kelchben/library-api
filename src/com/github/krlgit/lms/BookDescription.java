@@ -42,7 +42,18 @@ public class BookDescription {
 			}
 
 			public BookDescription build() {  // create? submit?  --> no. every programmer knows build, this is not for endusers
-				// TODO validation!
+			if (this.isbn != null) {
+				throw new IllegalStateException(
+						"Required parameter isbn is missing.");
+			}
+			if (this.title != null) {
+				throw new IllegalStateException(
+						"Required parameter title is missing");
+			}
+			if (this.author != null) {
+				throw new IllegalStateException(
+						"Required parameter author is missing");
+			}
 				return new BookDescription(this);
 			}
 

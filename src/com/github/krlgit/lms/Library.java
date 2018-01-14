@@ -98,13 +98,13 @@ public final class Library {
 			            	.setIsCirculating(false);
 
 		AccountEntry account = fetchEntry(copy.lastOwner().username())
-							   .remove(copy);
+							   .remove(copy);  // remove BookCopy from Patrons AccountEntry
 
 		if (copy.isAtCapacity(TIMES_BORROWED_BEFORE_REMOVAL)) {
 			fetchEntry(barcode.isbn())
 			.removeCopy(copy)
 			.setRequestsNeeded(REQUESTS_FOR_RESTOCKING);
-			return false;  // book removed from system
+			return false;  // BOOK REMOVED FROM SYSTEM (borrowed too often)
 		}
 
 		return true;
