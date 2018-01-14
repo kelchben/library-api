@@ -5,5 +5,5 @@
 - builder validations
 - provide useful fields in checked exceptions
 - document
-- class diagram
+- class diagram * halfway there
 - test
