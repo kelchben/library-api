@@ -51,15 +51,15 @@ public final class Patron {
 		}
 		
 		public Patron build() {  // create?
-			if (this.username != null) {
+			if (this.username == null) {
 				throw new IllegalStateException(
 						"Required parameter username is missing.");
 			}
-			if (this.firstName != null) {
+			if (this.firstName == null) {
 				throw new IllegalStateException(
 						"Required parameter firstName is missing");
 			}
-			if (this.birthdate != null) {
+			if (this.birthdate == null) {
 				throw new IllegalStateException(
 						"Required parameter birthdate is missing");
 			}

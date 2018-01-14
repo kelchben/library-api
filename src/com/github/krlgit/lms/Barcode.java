@@ -13,9 +13,19 @@ public final class Barcode {
 			throw new  IllegalArgumentException(
 					"Input too long (" + barcode.length() + " digits of 23 allowed). Input was: \n" + barcode);
 		}
+
 		String[] param = barcode.split(":");
-		return new Barcode(Isbn.from(param[0]),
-				Integer.valueOf(param[1]));
+
+		try {
+		Isbn isbn = Isbn.from(param[0]);
+		int copyId = Integer.valueOf(param[1]);
+
+		return new Barcode(isbn, copyId);
+
+		} catch(RuntimeException e) {
+			throw new IllegalArgumentException(
+					"[" + barcode + "] is not a valid Barcode [Isbn isbn : int copyId]");
+		}
 	}
 
 	public static Barcode from(Isbn isbn, int copyId) {

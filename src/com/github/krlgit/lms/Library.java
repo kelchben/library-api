@@ -14,6 +14,7 @@ import java.util.Set;
 
 public final class Library {
 
+
 	// TODO configuration should be passed to Library instance instead of static
     private static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
 	private static final int BOOKS_ALLOWED_PER_PATRON = 10;
@@ -264,21 +265,21 @@ public final class Library {
 
 	// overload "lookup" ? lookupAccount? does this even work without static library?
 	private final AccountEntry fetchEntry(Username usr) {
-		try {
-			return accounts.get(usr);
-		} catch(NullPointerException e) {
-			throw new IllegalArgumentException(
+			AccountEntry entry = accounts.get(usr);
+			if (entry == null) {
+				throw new IllegalArgumentException(
 					"Username: " + usr + " not found.");
-		}
+			}
+			return entry;
 	}
 
 	private final BookEntry fetchEntry(Isbn isbn) {
-		try {
-			return catalog.get(isbn);
-		} catch(NullPointerException e) {
+		BookEntry entry = catalog.get(isbn);
+		if (entry == null) {
 			throw new IllegalArgumentException(
-					"Isbn: " + isbn + " not found.");
+					"Isbn: " + isbn + " not in catalog.");
 		}
+		return entry;
 	}
 
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 // TODO refactor to interface: private class BookEntry implements Book Interface @override?
 
-final class BookEntry {
+public final class BookEntry {
 
 	private final BookDescription description;
 	private final Set<BookCopy> copies;
@@ -31,11 +31,14 @@ final class BookEntry {
 	}
 
 	public final BookCopy addBookCopy() {
-		Barcode barcode = generateBarcode();
-		BookCopy copy = new BookCopy(description, barcode);
-
-		copies.add(copy);
-		return copy;
+		try {
+			Barcode barcode = generateBarcode();
+			BookCopy copy = new BookCopy(description, barcode);
+			copies.add(copy);
+			return copy;
+		} catch(NullPointerException e) {
+			throw new NullPointerException("new BookCopy in BookEntry failed!");
+		}
 
 	}
 

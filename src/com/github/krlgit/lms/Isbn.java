@@ -46,7 +46,8 @@ public final class Isbn {
 		// if (obj == this)   // does this line make any difference?
 		// 	return true;
 		if (obj instanceof Isbn) {
-			return isbn == ((Isbn)obj).toString();
+			Isbn other = (Isbn)obj;
+			return other.isbn.equals(isbn);
 		}
 		return false;
 	}
@@ -56,10 +57,10 @@ public final class Isbn {
 
 	@Override
 	public int hashCode() {
-		int result = hashCode;
-		if (hashCode == 0) {
-		result = isbn.hashCode();
-		}
+		 int result = hashCode;
+		 if (hashCode == 0) {
+		 result = isbn.hashCode();
+		 }
 		return result;
 	}
 
