@@ -18,9 +18,6 @@ class BookCopy implements Book {
 		this.isCirculating = false;
 	}
 	
-	public final boolean isCirculating() {
-		return isCirculating;
-	}
 
 	final BookCopy setIsCirculating(boolean bool) {
 		isCirculating = bool;
@@ -37,12 +34,14 @@ class BookCopy implements Book {
 		return barcode;
 	}
 	
+	@Override
 	public final BookDescription description() {
 		return description;
 	}
 
-	public final List<Patron> circulationHistory() {
-		return new ArrayList<>(circulationHistory);  // defensive copy
+	@Override
+	public final boolean isCirculating() {
+		return isCirculating;
 	}
 
 	@Override
@@ -50,7 +49,13 @@ class BookCopy implements Book {
 		return circulationHistory.peek();
 	}
 
-	final boolean isAtCapacity(int MAX_CIRCULATION_HISTORY_SIZE) {  // should this be in caps? parameter is not a constant
+	@Override
+	public final List<Patron> circulationHistory() {
+		return new ArrayList<>(circulationHistory);  // defensive copy
+	}
+
+	@Override
+	public final boolean isAtCapacity(int MAX_CIRCULATION_HISTORY_SIZE) {  // should this be in caps? parameter is not a constant
 		return circulationHistory.size() >= MAX_CIRCULATION_HISTORY_SIZE;
 	}
 
