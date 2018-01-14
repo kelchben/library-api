@@ -1,13 +1,45 @@
 package com.github.krlgit.lms;
 
-// TODO refactor: Barcodes should just be strings?
-public final class Barcode {
-	// final byte type // (patron or book)
-	// final byte libraryId;
-	// final int bookId;  
-	private final Isbn isbn;
-	private final int copyId;   // use byte, short?
 
+/**
+ * This immutable class provides handling of Barcode Objects that are used as 
+ * identifier for individual Book copies. 
+ * <p> 
+ * A Barcode consists of an Isbn and an int value, that is
+ * automatically created on Book registration.
+ * <p> 
+ * Its format is [Isbn:int], for example: [3333114409496:2]
+ * 
+ * @author ag08
+ */
+public final class Barcode {
+
+	private final Isbn isbn;
+	private final int copyId; 
+
+
+	/**
+	 * Converts a String to the Barcode type.<br>
+	 * The input String has to be of the format <b>[isbn:copyId]</b>, 
+	 * with ISBN10 and ISBN13 being allowed and copy Id being an Integer > 0.
+	 * <p>
+	 * Examples:
+	 * <code><p>
+	 * Isbn.from("3333114409496:2");<br>
+	 * Isbn.from("3-11-345672-4:1");<br>
+	 * Isbn.from("111-1-22-224444-3");
+	 * </code><p>
+	 * <b>Beware:</b> Only basic validations are performed, 
+	 * Isbn CHECK digit is ignored. 
+	 * 
+	 * @param barcode a String following the contract <b>[isbn:copyId]</b>
+	 * @return the Barcode Object constructed from the input String
+	 * @throws IllegalArgumentException if <tt>String.length() > 23 digits</tt>
+	 * @throws IllegalArgumentException if <tt>copyId <= 0</tt>
+	 * @throws IllegalArgumentException if Isbn validation fails
+	 * @see {@link Isbn#from()}
+	 * @see {@link Username#from()}
+	 */
 	public static Barcode from(String barcode) {
 		if (barcode.length() > 13 + 10 ) { // max digits: 13 (isbn) + 10 (int copyId) 
 			throw new  IllegalArgumentException(
@@ -20,6 +52,11 @@ public final class Barcode {
 		Isbn isbn = Isbn.from(param[0]);
 		int copyId = Integer.valueOf(param[1]);
 
+		if (copyId <= 0) {
+			throw new IllegalArgumentException(
+					"copyId can not be <= 0, was: " + copyId);
+		}
+
 		return new Barcode(isbn, copyId);
 
 		} catch(RuntimeException e) {
@@ -30,11 +67,6 @@ public final class Barcode {
 
 	public static Barcode from(Isbn isbn, int copyId) {
 		return new Barcode(isbn, copyId);
-	}
-
-    private Barcode(Isbn isbn, int copyId) {
-		this.isbn = isbn; 
-		this.copyId = copyId;
 	}
 
     @Override
@@ -64,6 +96,12 @@ public final class Barcode {
     public final int copyId() {
     	return copyId;
     }
+
+    private Barcode(Isbn isbn, int copyId) {
+		this.isbn = isbn; 
+		this.copyId = copyId;
+	}
+
 
 
 }

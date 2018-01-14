@@ -1,6 +1,14 @@
 package com.github.krlgit.lms;
 
 // TODO this should probably only be a static helper class for validatin and Isbn stored as String
+
+/**
+ * This immutable class is a String Wrapper Type for Isbn Numbers.
+ * <p>
+ * IT IS CURRENTLY UNDOCUMENTED <br>
+ * Lookup the {@link Barcode} class, for some information bits.
+ * 
+ */
 public final class Isbn {
 	private final String isbn;
 

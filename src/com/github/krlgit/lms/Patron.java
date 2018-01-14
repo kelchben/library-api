@@ -3,10 +3,27 @@ package com.github.krlgit.lms;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
-// TODO THIS IS DESIGNED FOR INHERITANCE
+
+/**
+ * This immutable Type is meant to represent the (effectively) <b>immutable properties of a Library Patron</b>,
+ * e.g. <i>firstName, lastName, birthdate</i><br>
+ * <p>
+ * In concept, it is symmetrical to the {@link BookDescription} class and
+ * meant to be subclassed. 
+ * <p>
+ * So far, it is mostly <b>UNDOCUMENTED</b> but you can peek at the BookDescription
+ * to get an idea how it works.
+ * 
+ * <b>It's equals method is special, as does NOT compare usernames</b>. This <i>may prevent</i>
+ * someone registering with multiple Usernames (Patrons have to show their Id) and
+ * being able to borrow more than {@link Library#BOOKS_ALLOWED_PER_PATRON}.
+ * 
+ * @see {@link BookDescription}
+ *
+ */
 public final class Patron {
 	private final Username username; //  is it conceptually acceptable to keep this here and not in AccountEntry?
-//	yes: a Patron stops "existing" when a he has no username pointing at him
+//	yes: a Patron stops being a patron when a he has no username, BUT username has to be immutable
 	private final String firstName;
 	private final String lastName;
 	private final LocalDate birthdate; 

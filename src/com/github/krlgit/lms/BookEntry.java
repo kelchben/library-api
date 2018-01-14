@@ -7,7 +7,11 @@ import java.util.List;
 
 // TODO refactor to interface: private class BookEntry implements Book Interface @override?
 
-public final class BookEntry {
+/**
+ * Implementation Class
+ *
+ */
+final class BookEntry {
 
 	private final BookDescription description;
 	private final Set<BookCopy> copies;

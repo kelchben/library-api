@@ -3,8 +3,12 @@ package com.github.krlgit.lms;
 import java.util.HashSet;
 import java.util.Set;
 
-// TODO refactor this to an interface
-public final class AccountEntry {
+
+/**
+ * Implementation Class
+ *
+ */
+final class AccountEntry {
 
 	private final Patron patron;
 	private final Set<BookCopy> currentlyBorrowed;

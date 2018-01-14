@@ -4,9 +4,20 @@ import java.util.List;
 
 import com.github.krlgit.lms.BookDescription;
 
+/**
+ * The Interface Type Book represents the <b>unique copy of a Book</b>.
+ * Books could have different underlying formats in the future
+ * (e.g. AudioBook, ...)
+ * 
+ * <p> 
+ * <b> THIS CLASS IS CURRENTLY UNDOCUMENTED,<br> FOR DEMONSTRATION PURPOSES ONLY,</br> AND MAY BE SUBJECT TO CHANGE</b>
+ * <p>
+ * 
+ * @author ag08
+ */
 public interface Book {
 
-	// how to implement this redirection in a more generic way? does it even make sense here? 
+	// TODO how to implement this redirection in a more generic way? does it even make sense here? 
 	public static BookDescription.Builder with() {
 		return new BookDescription.Builder();
 	}

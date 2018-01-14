@@ -241,6 +241,8 @@ public final class Library {
 
 
 	/**
+	 * CURRENTLY UNDOCUMENTED
+	 * 
 	 * @param isbn
 	 * @param username
 	 * @return
@@ -261,7 +263,15 @@ public final class Library {
 		return false;
 	}
 
-	public final boolean requestNewItem(BookDescription description, Username username) {
+
+	/**
+	 * CURRENTLY UNDOCUMENTED
+	 * 
+	 * @param description
+	 * @param username
+	 * @return
+	 */
+	public final boolean requestNewBook(BookDescription description, Username username) {
 		try {
 			createEntry(description)  // throws IllegalArgumentException when isbn already in system
 			.setRequestsNeeded(REQUESTS_FOR_AQUISITION)
@@ -274,22 +284,28 @@ public final class Library {
 	}
 
 
-	// QUERY ----------------------------------------------------------------->
+// QUERY ----------------------------------------------------------------->
 
 	/* 
 	 *  Placeholder for Methods getting Patrons, Books. 
 	 *  Patron<->AccountEntry should be refactored/merged first, with appropiate Interface
 	 */
 
-	// *SPECIAL QUERIES DEMANDED BY HOMEWORK ASSIGNMENT* ----------------------------->
+// *SPECIAL QUERIES DEMANDED BY HOMEWORK ASSIGNMENT* ----------------------------->
 
 
+	/**
+	 *  CURRENTLY UNDOCUMENTED
+	 */
 	public final List<BookEntry> getAllBookEntries() {  
 		//		return catalog.values();  // bad, new collection is backed by map (map can be changed)!
 		return new ArrayList<BookEntry>(catalog.values());  // devensive copy vs performance? 
 	}
 
 
+	/**
+	 *  CURRENTLY UNDOCUMENTED
+	 */
 	public final Map<Barcode, Patron> getCurrentOwners(Isbn isbn) {
 		Map<Barcode, Patron> owners = new HashMap<>();
 
@@ -302,6 +318,9 @@ public final class Library {
 	}
 
 
+	/**
+	 *  CURRENTLY UNDOCUMENTED
+	 */
 	public final List<Patron> getCirculationHistory(Barcode barcode) {
 		return fetchEntry(barcode.isbn())
 				.getCopyWith(barcode)
@@ -310,37 +329,128 @@ public final class Library {
 	}
 
 
+	/**
+	 *  CURRENTLY UNDOCUMENTED
+	 */
 	public final List<Patron> getRequestsList(Isbn isbn) {
 		return fetchEntry(isbn)
 				.requests();
 	}
 
 
+	/**
+	 * CURRENTLY UNDOCUMENTED
+	 */
 	public final int getRequestsAsInt(Isbn isbn) {
 		return getRequestsList(isbn)
 				.size();
 	}
 
 
+	/**
+	 * CURRENTLY UNDOCUMENTED
+	 */
 	@SuppressWarnings("unchecked") 
 	public final List<Book> getAllCopies(Isbn isbn) {  
 		return (List<Book>)(List<?>)fetchEntry(isbn).copies(); // hacky unchecked double cast - find a better way with generics
 
 	}
 
-	// STRING ADAPTERS FOR CONVENIENCE --------------------------------------------------->
+// STRING ADAPTERS FOR CONVENIENCE --------------------------------------------------->
 
-
+	/**
+	*
+	* String adapter for convenience; see {@link #registerAdditionalCopy(Isbn)} for documentation
+	*
+	* @param isbn String
+	* @return Barcode
+	*/
 	public final Barcode registerAdditionalCopy(String isbn) { return registerAdditionalCopy(Isbn.from(isbn)); }
+
+	/**
+	*
+	* String adapter for convenience; see {@link #checkoutBook(Barcode, } for documentation
+	*
+	* @param barcode  String
+	* @param username  String
+	* @return boolean
+	*/
 	public final boolean checkoutBook(String barcode, String username) { return checkoutBook(Barcode.from(barcode), Username.from(username)); }
+
+	/**
+	*
+	* String adapter for convenience; see {@link #returnBook(Barcode)} for documentation
+	*
+	* @param barcode  String
+	* @return boolean
+	*/
 	public final boolean returnBook(String barcode) { return returnBook(Barcode.from(barcode)); }
+
+	/**
+	*
+	* String adapter for convenience; see {@link #requestExistingBook(Isbn, } for documentation
+	*
+	* @param isbn  String
+	* @param   String
+	* @return boolean
+	*/
 	public final boolean requestExistingBook(String isbn, String username) { return requestExistingBook(Isbn.from(isbn), Username.from(username)); }
-	public final boolean requestNewBook(BookDescription description, String username) { return requestNewItem(description, Username.from(username)); }
+
+	/**
+	*
+	* String adapter for convenience; see {@link #requestNewBook(description, } for documentation
+	*
+	* @param description  BookDescription
+	* @param username  String
+	* @return boolean
+	*/
+	public final boolean requestNewBook(BookDescription description, String username) { return requestNewBook(description, Username.from(username)); }
+
+	/**
+	*
+	* String adapter for convenience; see {@link #getCurrentOwners(Isbn)} for documentation
+	*
+	* @param isbn String
+	* @return Map<Barcode, Patron>
+	*/
 	public final Map<Barcode, Patron> getCurrentOwners(String isbn) { return getCurrentOwners(Isbn.from(isbn)); }
+
+	/**
+	*
+	* String adapter for convenience; see {@link #getCirculationHistory(Barcode)} for documentation
+	*
+	* @param barcode  String
+	* @return List<Patron>
+	*/
 	public final List<Patron> getCirculationHistory(String barcode) { return getCirculationHistory(Barcode.from(barcode)); }
+
+	/**
+	*
+	* String adapter for convenience; see {@link #getAllCopies(Isbn)} for documentation
+	*
+	* @param isbn  String
+	* @return List<Book>
+	*/
 	public final List<Book> getAllCopies(String isbn) { return getAllCopies(Isbn.from(isbn)); }
+
+	/**
+	*
+	* String adapter for convenience; see {@link #getRequestsList(Isbn)} for documentation
+	*
+	* @param isbn String
+	* @return List<Patron>
+	*/
 	public final List<Patron> getRequestsList(String isbn) { return getRequestsList(Isbn.from(isbn)); }
+
+	/**
+	*
+	* String adapter for convenience; see {@link #getRequestsAsInt(Isbn)} for documentation
+	*
+	* @param isbn  String
+	* @return int requests
+	*/
 	public final int getRequestsAsInt(String isbn) { return getRequestsAsInt(Isbn.from(isbn)); }
+
 
 	//=============================================================================//
 	//                            IMPLEMENTATION                                   //

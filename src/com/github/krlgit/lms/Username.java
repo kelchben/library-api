@@ -1,6 +1,11 @@
 package com.github.krlgit.lms;
 
 /* 
+ * This immutable class is a String Wrapper Type for Usernames. In the future it 
+ * could provide validation mechanisms, etc.
+ * 
+ * IT IS CURRENTLY UNDOCUMENTED
+ * 
  * TODO Restrict and Validate OR autogenerate from Patron Data?
  * TODO Use it for caching hashCode?
  * TODO remove this class? replace with string?
