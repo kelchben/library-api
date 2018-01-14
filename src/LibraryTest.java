@@ -98,7 +98,7 @@ public class LibraryTest {
 
 	out.println("User mitsubishi666 tries to check out Book with barcode 3-11-345672-4:1\n" +
 	/////////////////////////////////////////////////////////////////////////////
-			library.checkoutItem("3-11-345672-4:1", "mitsubishi666")
+			library.checkoutBook("3-11-345672-4:1", "mitsubishi666")
 	/////////////////////////////////////////////////////////////////////////////
 			);
 
@@ -106,7 +106,7 @@ public class LibraryTest {
 		out.println("\nUser leiderfort123 tries to borrow the same book (should not be possible, because the barcode is on the physical copy)");
 		out.println(
 	/////////////////////////////////////////////////////////////////////////////
-				library.checkoutItem("3-11-345672-4:1", "leiderfort123")
+				library.checkoutBook("3-11-345672-4:1", "leiderfort123")
 	////////////////////////////////////////////////////////////////////////////
 				);
 	} catch(IllegalStateException e) {

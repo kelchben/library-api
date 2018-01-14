@@ -9,50 +9,130 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// TODO use Barcode as Key instead of Isbn (Isbn is inside...)?
-// but... how to handle BookEntries with no existing copies? special barcode?
 
+/**
+ * 
+ * This class is the heart of the Library Managment System, as it
+ * provides the main functionalities of a Library, like
+ * <p><ul>
+ * <li> registration of Patrons and Books,
+ * <li> checking out and reclaiming Books,
+ * <li> handling Book requests from Patrons, 
+ * <li> various queries 
+ * </ul><p> 
+ * It uses and connects all classes of this package.
+ * 
+ * @author ag08
+ * 
+ */
+/**
+ * @author princess
+ *
+ */
 public final class Library {
 
 
-	// TODO configuration should be passed to Library instance instead of static
-    private static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
-	private static final int BOOKS_ALLOWED_PER_PATRON = 10;
-	private static final int REQUESTS_FOR_AQUISITION = 5;
-	private static final int REQUESTS_FOR_RESTOCKING = 2;
+	/**
+	 * The number of times ({@value}) a Book can be checked out and returned
+	 * before it is removed from the System due to wear and tear.
+	 * 
+	 * @see checkout
+	 * @see return
+	 */
+	public static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
+
+	/**
+	 * The max number of Books ({@value}) a Patron can have at 
+	 * the same time.
+	 */
+	public static final int BOOKS_ALLOWED_PER_PATRON = 10;
+
+	/**
+	 * The number of requests needed ({@value}), till a <b>new</b>
+	 * Book gets added to the Libraries shopping list.
+	 * 
+	 * @see requestExistingBook
+	 */
+	public static final int REQUESTS_FOR_AQUISITION = 5;
+
+	/**
+	 * The number of requests needed ({@value}), till a Book that had 
+	 * <b>previously existing</b> copies in the system
+	 * gets added to the Libraries shopping list.
+	 * 
+	 * @see requestNewBook
+	 */
+	public static final int REQUESTS_FOR_RESTOCKING = 2;
 
 	private final Map<Isbn, BookEntry> catalog;
 	private final Map<Username, AccountEntry> accounts;
 	private final Set<Isbn> shoppingList;
 
 
-//=============================================================================//
-//                                   API                                       //
-//=============================================================================//
-
-
-// CREATE ------------------------------------------------------>
-
+	/**
+	 * Constructs a new, empty Library. 
+	 * Configuration in static class constants.
+	 * 
+	 * @see TIMES_BORROWED_BEFORE_REMOVAL
+	 * @see BOOKS_ALLOWED_PER_PATRON
+	 * @see REQUESTS_FOR_AQUISITION
+	 * @see REQUESTS_FOR_RESTOCKING
+	 */
 	public Library() {
 		this.catalog = new HashMap<>();
 		this.accounts = new HashMap<>();
 		this.shoppingList = new HashSet<>();
 	}
 
+
 // REGISTER ----------------------------------------------------->
 
-	public final Username register(Patron patron) {
+	/** 
+	 * Adds the specified Patron to this library if he is not 
+	 * already registered. Returns his Username.
+	 * 
+	 * @param  patron  an unregistered Patron, not null
+	 * @return the now registered Patrons Username
+	 * @throws IllegalArgumentException if
+	 *         patron.username() is already taken
+	 * @throws IllegalArgumentException if patron is 
+	 *		   already registered with another username
+	 * 
+	 */
+	public final Username register(Patron patron)
+			throws IllegalArgumentException {
 		return createEntry(patron)
-			   .patron()
-			   .username();
+				.patron()
+				.username();
 	}
 
-	public final Barcode register(BookDescription descr) {
-		return createEntry(descr)
-			   .addBookCopy()
-			   .barcode();
+	/** 
+	 * Adds a Book with the specified BookDescription
+	 * to this library if a Book with the same Isbn
+	 * is not already registered. 
+	 * Generates and returns Barcode of the new Book.
+	 * 
+	 * @param  description  the BookDescription of the Book to be added, not null
+	 * @return the Barcode generated for the added Book
+	 * @throws IllegalArgumentException if books
+	 *         Isbn is already in system
+	 */
+	public final Barcode register(BookDescription description) 
+			throws IllegalArgumentException {
+		return createEntry(description)
+				.addBookCopy()
+				.barcode();
 	}
 
+	/**
+	 * Add another Copy of a Book that is already registered with the library. 
+	 * Returns the newly generated Barcode for the added Book.
+	 * 
+	 * @param isbn  the Isbn number of the Book to be added, not null
+	 * @return the Barcode generated for the added Book
+	 * @throws IllegalArgumentException if books 
+	 *         Isbn is not found in system
+	 */
 	public final Barcode registerAdditionalCopy(Isbn isbn) {
 		return fetchEntry(isbn)
 				.addBookCopy()
@@ -62,22 +142,47 @@ public final class Library {
 
 // CHECKOUT / RETURN / REQUEST ----------------------------------->
 
-//	public final boolean checkoutItem(String barcode, String username) {
-//		return checkoutItem(Barcode.from(barcode), Isbn.from(barcode));
-//	}
 
-
-	public final boolean checkoutItem(Barcode barcode, Username username) 
-			throws IllegalArgumentException {
+	/**
+	 * Checks out (borrows) a Book from the Library to a Patron,
+	 * referenced by it's Barcode and the Patrons Username.
+	 * A cross reference is created:
+	 * <p><ul>
+	 * <li> the Book is added to the Patrons Account
+	 * <li> the Patron is added to the Books circulationHistory 
+	 * </ul><p>
+	 * Returns <tt>true</tt> if the checkout succeded and 
+	 * <tt>false</tt> if the checkout fails, due to the Patrons 
+	 * Account currently holding the max number of Books allowed 
+	 * at the same time ({@value #BOOKS_ALLOWED_PER_PATRON}).
+	 * <p>
+	 * If a barcode from an already borrowed book is entered,
+	 * an IllegalStateException is thrown. 
+	 * <p> 
+	 * The method changes the state of the Book to 
+	 * <code>isCirculating == true.</code>
+	 * It can be reversed with {@link #returnBook(Barcode)}.
+	 * 
+	 * @param barcode  the Barcode of the Book to borrow
+	 * @param username  the Username of the involved Patron
+	 * @return <tt>true</tt> if Patron is not at {@link BOOKS_ALLOWED_PER_PATRON} limit
+	 * @throws IllegalStateException if book.isCirculating == true
+	 * @throws IllegalArgumentException if the Barcode is not found
+	 * @throws IllegalArgumentException if the Username is not found
+	 * @see {@link Book#isCirculating()}
+	 * @see {@link Book#circulationHistory()}
+	 */
+	public final boolean checkoutBook(Barcode barcode, Username username) 
+			throws IllegalStateException {
 
 		AccountEntry account = fetchEntry(username);
 
 		if (account.isAtCapacity(BOOKS_ALLOWED_PER_PATRON)) {
-		return false;  // checkout failed: account at limit
+			return false;  // checkout failed: account at limit
 		}
 
 		BookCopy copy = fetchEntry(barcode.isbn())
-			  	        .getCopyWith(barcode);
+				.getCopyWith(barcode);
 
 		if (copy.isCirculating()) {   // this should not be possible (duplicate barcode)
 			throw new IllegalStateException(    
@@ -86,20 +191,20 @@ public final class Library {
 
 		copy.setIsCirculating(true) 
 		.appendCirculationHistory(account.patron());
-	
+
 		account.add(copy);
 
 		return true; // checkout succeded
 	}
 
 
-	public final boolean returnItem(Barcode barcode) {
+	public final boolean returnBook(Barcode barcode) {
 		BookCopy copy = fetchEntry(barcode.isbn())
-			        	.getCopyWith(barcode)
-			            	.setIsCirculating(false);
+				.getCopyWith(barcode)
+				.setIsCirculating(false);
 
 		AccountEntry account = fetchEntry(copy.lastOwner().username())
-							   .remove(copy);  // remove BookCopy from Patrons AccountEntry
+				.remove(copy);  // remove BookCopy from Patrons AccountEntry
 
 		if (copy.isAtCapacity(TIMES_BORROWED_BEFORE_REMOVAL)) {
 			fetchEntry(barcode.isbn())
@@ -112,28 +217,28 @@ public final class Library {
 	}
 
 
-	public final boolean requestExistingItem(Isbn isbn, Username username) {
+	public final boolean requestExistingBook(Isbn isbn, Username username) {
 		Patron patron = fetchEntry(username).patron();
 		BookEntry entry = fetchEntry(isbn);
 
-		 if ( !shoppingList.contains(isbn) && 
-			  !entry.hasAvailableCopy() &&  
-			   entry.addToRequests(patron) == entry.requestsNeeded() ) { // addToRequests returns requests.size( 
+		if ( !shoppingList.contains(isbn) && 
+				!entry.hasAvailableCopy() &&  
+				entry.addToRequests(patron) == entry.requestsNeeded() ) { // addToRequests returns requests.size( 
 
 			entry.clearRequests();
 			shoppingList.add(isbn);  
 			return true; 
-		 }
+		}
 
-		 return false;
+		return false;
 	}
 
 	public final boolean requestNewItem(BookDescription description, Username username) {
 		try {
-		 createEntry(description)  // throws IllegalArgumentException when isbn already in system
-		.setRequestsNeeded(REQUESTS_FOR_AQUISITION)
-		.addToRequests(fetchEntry(username).patron());  // set takes care of duplicates
-		 return true;  
+			createEntry(description)  // throws IllegalArgumentException when isbn already in system
+			.setRequestsNeeded(REQUESTS_FOR_AQUISITION)
+			.addToRequests(fetchEntry(username).patron());  // set takes care of duplicates
+			return true;  
 
 		} catch(IllegalArgumentException e) {
 			return false; // request failed
@@ -141,18 +246,18 @@ public final class Library {
 	}
 
 
-// QUERY ----------------------------------------------------------------->
+	// QUERY ----------------------------------------------------------------->
 
 	/* 
 	 *  Placeholder for Methods getting Patrons, Books. 
 	 *  Patron<->AccountEntry should be refactored/merged first, with appropiate Interface
 	 */
 
-// *SPECIAL QUERIES DEMANDED BY HOMEWORK ASSIGNMENT* ----------------------------->
+	// *SPECIAL QUERIES DEMANDED BY HOMEWORK ASSIGNMENT* ----------------------------->
 
 
 	public final List<BookEntry> getAllBookEntries() {  
-//		return catalog.values();  // bad, new collection is backed by map (map can be changed)!
+		//		return catalog.values();  // bad, new collection is backed by map (map can be changed)!
 		return new ArrayList<BookEntry>(catalog.values());  // devensive copy vs performance? 
 	}
 
@@ -195,14 +300,14 @@ public final class Library {
 
 	}
 
-// STRING ADAPTERS FOR CONVENIENCE --------------------------------------------------->
+	// STRING ADAPTERS FOR CONVENIENCE --------------------------------------------------->
 
 
 	public final Barcode registerAdditionalCopy(String isbn) { return registerAdditionalCopy(Isbn.from(isbn)); }
-	public final boolean checkoutItem(String barcode, String username) { return checkoutItem(Barcode.from(barcode), Username.from(username)); }
-	public final boolean returnItem(String barcode) { return returnItem(Barcode.from(barcode)); }
-	public final boolean requestExistingItem(String isbn, String username) { return requestExistingItem(Isbn.from(isbn), Username.from(username)); }
-	public final boolean requestNewItem(BookDescription description, String username) { return requestNewItem(description, Username.from(username)); }
+	public final boolean checkoutBook(String barcode, String username) { return checkoutBook(Barcode.from(barcode), Username.from(username)); }
+	public final boolean returnBook(String barcode) { return returnBook(Barcode.from(barcode)); }
+	public final boolean requestExistingBook(String isbn, String username) { return requestExistingBook(Isbn.from(isbn), Username.from(username)); }
+	public final boolean requestNewBook(BookDescription description, String username) { return requestNewItem(description, Username.from(username)); }
 	public final Map<Barcode, Patron> getCurrentOwners(String isbn) { return getCurrentOwners(Isbn.from(isbn)); }
 	public final List<Patron> getCirculationHistory(String barcode) { return getCirculationHistory(Barcode.from(barcode)); }
 	public final List<Book> getAllCopies(String isbn) { return getAllCopies(Isbn.from(isbn)); }
@@ -265,12 +370,12 @@ public final class Library {
 
 	// overload "lookup" ? lookupAccount? does this even work without static library?
 	private final AccountEntry fetchEntry(Username usr) {
-			AccountEntry entry = accounts.get(usr);
-			if (entry == null) {
-				throw new IllegalArgumentException(
+		AccountEntry entry = accounts.get(usr);
+		if (entry == null) {
+			throw new IllegalArgumentException(
 					"Username: " + usr + " not found.");
-			}
-			return entry;
+		}
+		return entry;
 	}
 
 	private final BookEntry fetchEntry(Isbn isbn) {

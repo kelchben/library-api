@@ -30,16 +30,11 @@ public final class BookEntry {
 		return new ArrayList<BookCopy>(copies);
 	}
 
-	public final BookCopy addBookCopy() {
-		try {
+	public final BookCopy addBookCopy() {   // TODO this and similar should return boolean
 			Barcode barcode = generateBarcode();
 			BookCopy copy = new BookCopy(description, barcode);
 			copies.add(copy);
 			return copy;
-		} catch(NullPointerException e) {
-			throw new NullPointerException("new BookCopy in BookEntry failed!");
-		}
-
 	}
 
 	public final Set<BookCopy> addBookCopy(int numberOfCopies) {
