@@ -171,6 +171,7 @@ public final class Library {
 	 * @throws IllegalArgumentException if the Username is not found
 	 * @see {@link Book#isCirculating()}
 	 * @see {@link Book#circulationHistory()}
+	 * @see {@link #returnBook(Barcode)}
 	 */
 	public final boolean checkoutBook(Barcode barcode, Username username) 
 			throws IllegalStateException {
@@ -198,10 +199,32 @@ public final class Library {
 	}
 
 
+	/**
+	 * "Returns" borrowed Book with specified Barcode to Library 
+	 * (<code>isCirculating=false</code>), or removes it from the system,
+	 * when {@link TIMES_BORROWED_BEFORE_REMOVAL} was reached.
+	 * <p>
+	 * It is removed from the Patrons Account, but a reference to the Patron is
+	 * kept in the Books circulationHistory.
+	 * 
+	 * For Books that get removed from the System by this Method,
+	 * the number of User requests needed, before the Library reaquires it 
+	 * is {@link REQUESTS_FOR_RESTOCKING} ({@value #REQUESTS_FOR_RESTOCKING}).
+	 * 
+	 * @param barcode  Barcode of the Book to be returned
+	 * @return true, if Book is returned | false, if Book is removed from system
+	 * @throws IllegalArgumentException if Barcode is not found in system
+	 * @throws IllegalStateException if Book <code>isCirculating==false</code>
+	 */
 	public final boolean returnBook(Barcode barcode) {
-		BookCopy copy = fetchEntry(barcode.isbn())
-				.getCopyWith(barcode)
-				.setIsCirculating(false);
+		BookCopy copy = fetchEntry(barcode.isbn()).getCopyWith(barcode);
+
+		if (!copy.isCirculating()) {   // this should not be possible (duplicate barcode)
+			throw new IllegalStateException(    
+					"The copy " + barcode + " has already been returned.");
+		}
+
+				copy.setIsCirculating(false);
 
 		AccountEntry account = fetchEntry(copy.lastOwner().username())
 				.remove(copy);  // remove BookCopy from Patrons AccountEntry
@@ -217,6 +240,11 @@ public final class Library {
 	}
 
 
+	/**
+	 * @param isbn
+	 * @param username
+	 * @return
+	 */
 	public final boolean requestExistingBook(Isbn isbn, Username username) {
 		Patron patron = fetchEntry(username).patron();
 		BookEntry entry = fetchEntry(isbn);
