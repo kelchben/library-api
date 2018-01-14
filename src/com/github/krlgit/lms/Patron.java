@@ -5,7 +5,8 @@ import java.time.LocalDate;
 
 // TODO THIS IS DESIGNED FOR INHERITANCE
 public final class Patron {
-	private final Username username;
+	private final Username username; //  is it conceptually acceptable to keep this here and not in AccountEntry?
+//	yes: a Patron stops "existing" when a he has no username pointing at him
 	private final String firstName;
 	private final String lastName;
 	private final LocalDate birthdate; 

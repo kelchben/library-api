@@ -6,7 +6,6 @@ import java.util.Set;
 // TODO refactor this to an interface
 public final class AccountEntry {
 
-	// username should be here, conceptually? grr...
 	private final Patron patron;
 	private final Set<BookCopy> currentlyBorrowed;
 	// private final Set<Isbn> requests;
