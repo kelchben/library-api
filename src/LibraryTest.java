@@ -5,12 +5,15 @@ public class LibraryTest {
 
 	public static void main(String[] args) {
 
-// CREATE 
+		
 
-	Library library = new Library();
+// Isbns
+Isbn testIsbn = Isbn.from("333-4-444-42");
 
-// create BookDescriptions and Patrons (not registered to any library): 
+///// Barcodes
+Barcode testBarcode = Barcode.from("333-4-444-42:1");
 
+/////BookDescriptions
 	BookDescription testBookDescription = BookDescription.with()
 			.title("Arbeitsweise einer EDVA")
 			.author("KOMBINAT DATENVERARBEITUNG")
@@ -24,6 +27,10 @@ public class LibraryTest {
 			.birthdate(2002, 2, 2)  // needed for "uniqueness" check 
 			.build();               // ---> a Patron cannot register at same library with multiple Usernames
 			
+
+///////////////////////////// Library //////////////////////////////////
+	Library library = new Library();
+
 
 // REGISTER 
 
