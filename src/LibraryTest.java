@@ -72,7 +72,7 @@ Barcode testBarcode = Barcode.from("333-4-444-42:1");
 	out.println(
 	// combining registering and building
 	//-------------------------------------------------------------------
-			library.register(Book.with()   // Book.with() links to BookDescription.with()... messy :(
+			library.register(Book.with()   // TODO Book.with() links to BookDescription.with()... messy :(
 					.isbn("1-23-456789-X") // ISBN10 or ISBN13 possible
 					.title("Holzige Holothurien")
 					.author("Hans Hobel")

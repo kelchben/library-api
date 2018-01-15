@@ -6,6 +6,8 @@ import java.util.Set;
 
 /**
  * Implementation Class
+ * <p>
+ * (the mutable backing of Patron)
  *
  */
 final class AccountEntry {

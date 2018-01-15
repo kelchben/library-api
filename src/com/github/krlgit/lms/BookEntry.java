@@ -8,8 +8,9 @@ import java.util.List;
 // TODO refactor to interface: private class BookEntry implements Book Interface @override?
 
 /**
- * Implementation Class
- *
+ * Implementation Class 
+ * 
+ * (the mutable backing of BookDescription)  
  */
 final class BookEntry {
 
