@@ -1,4 +1,4 @@
-# library-api -- homework assignment
+# library-api -- homework assignment -- starting points = LibraryTest.java, Library.java
 
 - ~~create Wrappers that take Strings as Arguments instead of Isbn, Username, Barcode( is there a generic way?)~~
 - ~~implement Barcode.from(String)~~
