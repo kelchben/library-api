@@ -369,7 +369,7 @@ public final class Library {
 
 	/**
 	*
-	* String adapter for convenience; see {@link #checkoutBook(Barcode, } for documentation
+	* String adapter for convenience; see {@link #checkoutBook(Barcode, Username)} for documentation
 	*
 	* @param barcode  String
 	* @param username  String
@@ -388,7 +388,7 @@ public final class Library {
 
 	/**
 	*
-	* String adapter for convenience; see {@link #requestExistingBook(Isbn, } for documentation
+	* String adapter for convenience; see {@link #requestExistingBook(Isbn, Username)} for documentation
 	*
 	* @param isbn  String
 	* @param   String
@@ -398,7 +398,7 @@ public final class Library {
 
 	/**
 	*
-	* String adapter for convenience; see {@link #requestNewBook(description, } for documentation
+	* String adapter for convenience; see {@link #requestNewBook(BookDescription, Username)} for documentation
 	*
 	* @param description  BookDescription
 	* @param username  String
