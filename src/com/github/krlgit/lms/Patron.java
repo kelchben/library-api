@@ -18,7 +18,7 @@ import java.time.LocalDate;
  * someone registering with multiple Usernames (Patrons have to show their Id) and
  * being able to borrow more than {@link Library#BOOKS_ALLOWED_PER_PATRON}.
  * 
- * @see {@link BookDescription}
+ * @see BookDescription
  *
  */
 public final class Patron {

@@ -19,7 +19,7 @@ package com.github.krlgit.lms;
  * in the likes of <i>color, smell,... </i> (obviously). But also properties like
  * <i>numberOfPages</i> could be a border case.
  *
- * @see {@link Library#register(BookDescription)}
+ * @see Library#register(BookDescription)
  */
 public class BookDescription {
 

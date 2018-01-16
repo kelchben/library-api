@@ -1,8 +1,6 @@
 package com.github.krlgit.lms;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,8 +30,8 @@ public final class Library {
      * The number of times ({@value}) a Book can be checked out and returned
      * before it is removed from the System due to wear and tear.
      * 
-     * @see checkout
-     * @see return
+     * @see #checkoutBook(Username, Barcode)
+     * @see #returnBook(Barcode)
      */
     public static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
 
@@ -47,7 +45,7 @@ public final class Library {
      * The number of requests needed ({@value}), till a <b>new</b>
      * Book gets added to the Libraries shopping list.
      * 
-     * @see requestExistingBook
+     * @see #requestUnregisteredBook(Username, Isbn)
      */
     public static final int REQUESTS_FOR_AQUISITION = 5;
 
@@ -56,7 +54,7 @@ public final class Library {
      * <b>previously existing</b> copies in the system
      * gets added to the Libraries shopping list.
      * 
-     * @see requestNewBook
+     * @see #requestUnregisteredBook(Username, BookDescription)
      */
     public static final int REQUESTS_FOR_RESTOCKING = 2;
 
@@ -69,10 +67,10 @@ public final class Library {
      * Constructs a new, empty Library. 
      * Configuration in static class constants.
      * 
-     * @see TIMES_BORROWED_BEFORE_REMOVAL
-     * @see BOOKS_ALLOWED_PER_PATRON
-     * @see REQUESTS_FOR_AQUISITION
-     * @see REQUESTS_FOR_RESTOCKING
+     * @see #TIMES_BORROWED_BEFORE_REMOVAL
+     * @see #BOOKS_ALLOWED_PER_PATRON
+     * @see #REQUESTS_FOR_AQUISITION
+     * @see #REQUESTS_FOR_RESTOCKING
      */
     public Library() {
         this.catalog = new HashMap<>();
@@ -161,13 +159,11 @@ public final class Library {
      * @param username  the Username of the involved Patron
      * @param barcode  the Barcode of the Book to borrow
      * 
-     * @return <tt>true</tt> if Patron is not at {@link BOOKS_ALLOWED_PER_PATRON} limit
+     * @return <tt>true</tt> if Patron is not at {@link #BOOKS_ALLOWED_PER_PATRON} limit
      * @throws IllegalStateException if book.isCirculating == true
      * @throws IllegalArgumentException if the Barcode is not found
      * @throws IllegalArgumentException if the Username is not found
-     * @see {@link Book#isCirculating()}
-     * @see {@link Book#circulationHistory()}
-     * @see {@link #returnBook(Barcode)}
+     * @see #returnBook(Barcode)
      */
     public final boolean checkoutBook(Username username, Barcode barcode) 
             throws IllegalStateException {
@@ -198,14 +194,14 @@ public final class Library {
     /**
      * "Returns" borrowed Book with specified Barcode to Library 
      * (<code>isCirculating=false</code>), or removes it from the system,
-     * when {@link TIMES_BORROWED_BEFORE_REMOVAL} was reached.
+     * when {@link #TIMES_BORROWED_BEFORE_REMOVAL} was reached.
      * <p>
      * It is removed from the Patrons Account, but a reference to the Patron is
      * kept in the Books circulationHistory.
      * 
      * For Books that get removed from the System by this Method,
      * the number of User requests needed, before the Library reaquires it 
-     * is {@link REQUESTS_FOR_RESTOCKING} ({@value #REQUESTS_FOR_RESTOCKING}).
+     * is {@link #REQUESTS_FOR_RESTOCKING} ({@value #REQUESTS_FOR_RESTOCKING}).
      * 
      * @param barcode  Barcode of the Book to be returned
      * @return true, if Book is returned | false, if Book is removed from system
@@ -223,7 +219,7 @@ public final class Library {
                 copy.setIsCirculating(false);
 
         AccountEntry account = fetchEntry(copy.lastOwner().username())
-                .remove(copy);  // remove BookCopy from Patrons AccountEntry
+                               .remove(copy);  // remove BookCopy from Patrons AccountEntry
 
         if (copy.isAtCapacity(TIMES_BORROWED_BEFORE_REMOVAL)) {
             fetchEntry(barcode.isbn())
@@ -238,10 +234,11 @@ public final class Library {
 
     /**
      * CURRENTLY UNDOCUMENTED
-     * @param username
+     * 
+     * @param username 
      * @param isbn
      * 
-     * @return
+     * @return false. true, if isbn was added to shopping list
      */
     public final boolean requestUnregisteredBook(Username username, Isbn isbn) {
         Patron patron = fetchEntry(username).patron();
@@ -261,16 +258,17 @@ public final class Library {
             return true;   // book will be aquired now
         }
 
-        return false;  //
+        return false;  // request _may_ have been successful TODO refactor this
     }
 
 
     /**
      * CURRENTLY UNDOCUMENTED
+     * 
      * @param username
      * @param description
      * 
-     * @return
+     * @return true, if BookDescription was registered. false, if request failed
      */
     public final boolean requestUnregisteredBook(Username username, BookDescription description) {
         try {
@@ -393,7 +391,7 @@ public final class Library {
     *
     * String adapter for convenience; see {@link #requestUnregisteredBook(Username, Isbn)} for documentation
      * @param isbn  String
-     * @param   String
+     * @param username  String
     *
     * @return boolean
     */
@@ -526,15 +524,6 @@ public final class Library {
                     "Isbn: " + isbn + " not in catalog.");
         }
         return entry;
-    }
-
-
-    private final Patron fetchUser(String username) {
-        return fetchEntry(Username.from(username)).patron();
-    }
-
-    private final BookDescription fetchBookDescription(String isbn) {
-        return fetchEntry(Isbn.from(isbn)).bookDescription();
     }
 
 }

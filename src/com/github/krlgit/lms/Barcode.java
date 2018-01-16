@@ -21,24 +21,26 @@ public final class Barcode {
 	/**
 	 * Converts a String to the Barcode type.<br>
 	 * The input String has to be of the format <b>[isbn:copyId]</b>, 
-	 * with ISBN10 and ISBN13 being allowed and copy Id being an Integer > 0.
+	 * with ISBN10 and ISBN13 being allowed and copy Id being an <tt>Integer > 0</tt>.
 	 * <p>
 	 * Examples:
-	 * <code><p>
+	 * <p>
+	 * <code>
 	 * Isbn.from("3333114409496:2");<br>
 	 * Isbn.from("3-11-345672-4:1");<br>
 	 * Isbn.from("111-1-22-224444-3");
-	 * </code><p>
+	 * </code>
+	 * <p>
 	 * <b>Beware:</b> Only basic validations are performed, 
 	 * Isbn CHECK digit is ignored. 
 	 * 
 	 * @param barcode a String following the contract <b>[isbn:copyId]</b>
 	 * @return the Barcode Object constructed from the input String
-	 * @throws IllegalArgumentException if <tt>String.length() > 23 digits</tt>
-	 * @throws IllegalArgumentException if <tt>copyId <= 0</tt>
+	 * @throws IllegalArgumentException if <code>String.length() > 23 digits</code>
+	 * @throws IllegalArgumentException if <code>copyId <= 0</code>
 	 * @throws IllegalArgumentException if Isbn validation fails
-	 * @see {@link Isbn#from()}
-	 * @see {@link Username#from()}
+	 * @see Isbn#from(String)
+	 * @see Username#from(String)
 	 */
 	public static Barcode from(String barcode) {
 		if (barcode.length() > 13 + 10 ) { // max digits: 13 (isbn) + 10 (int copyId) 
