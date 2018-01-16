@@ -43,22 +43,18 @@ class BookCopy implements Book {
 		return description;
 	}
 
-	@Override
 	public final boolean isCirculating() {
 		return isCirculating;
 	}
 
-	@Override
 	public final Patron lastOwner() {
 		return circulationHistory.peek();
 	}
 
-	@Override
 	public final List<Patron> circulationHistory() {
 		return new ArrayList<>(circulationHistory);  // defensive copy
 	}
 
-	@Override
 	public final boolean isAtCapacity(int MAX_CIRCULATION_HISTORY_SIZE) {  // should this be in caps? parameter is not a constant
 		return circulationHistory.size() > MAX_CIRCULATION_HISTORY_SIZE;
 	}
