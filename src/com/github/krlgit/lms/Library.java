@@ -162,9 +162,9 @@ public final class Library {
 	 * The method changes the state of the Book to 
 	 * <code>isCirculating == true.</code>
 	 * It can be reversed with {@link #returnBook(Barcode)}.
-	 * 
-	 * @param barcode  the Barcode of the Book to borrow
 	 * @param username  the Username of the involved Patron
+	 * @param barcode  the Barcode of the Book to borrow
+	 * 
 	 * @return <tt>true</tt> if Patron is not at {@link BOOKS_ALLOWED_PER_PATRON} limit
 	 * @throws IllegalStateException if book.isCirculating == true
 	 * @throws IllegalArgumentException if the Barcode is not found
@@ -173,7 +173,7 @@ public final class Library {
 	 * @see {@link Book#circulationHistory()}
 	 * @see {@link #returnBook(Barcode)}
 	 */
-	public final boolean checkoutBook(Barcode barcode, Username username) 
+	public final boolean checkoutBook(Username username, Barcode barcode) 
 			throws IllegalStateException {
 
 		AccountEntry account = fetchEntry(username);
@@ -242,12 +242,12 @@ public final class Library {
 
 	/**
 	 * CURRENTLY UNDOCUMENTED
-	 * 
-	 * @param isbn
 	 * @param username
+	 * @param isbn
+	 * 
 	 * @return
 	 */
-	public final boolean requestExistingBook(Isbn isbn, Username username) {
+	public final boolean requestUnregisteredBook(Username username, Isbn isbn) {
 		Patron patron = fetchEntry(username).patron();
 		BookEntry entry = fetchEntry(isbn);
 
@@ -271,12 +271,12 @@ public final class Library {
 
 	/**
 	 * CURRENTLY UNDOCUMENTED
-	 * 
-	 * @param description
 	 * @param username
+	 * @param description
+	 * 
 	 * @return
 	 */
-	public final boolean requestNewBook(BookDescription description, Username username) {
+	public final boolean requestUnregisteredBook(Username username, BookDescription description) {
 		try {
 			createEntry(description)  // throws IllegalArgumentException when isbn already in system
 			.setRequestsNeeded(REQUESTS_FOR_AQUISITION)
@@ -375,13 +375,13 @@ public final class Library {
 
 	/**
 	*
-	* String adapter for convenience; see {@link #checkoutBook(Barcode, Username)} for documentation
+	* String adapter for convenience; see {@link #checkoutBook(Username, Barcode)} for documentation
+	 * @param username  String
+	 * @param barcode  String
 	*
-	* @param barcode  String
-	* @param username  String
 	* @return boolean
 	*/
-	public final boolean checkoutBook(String barcode, String username) { return checkoutBook(Barcode.from(barcode), Username.from(username)); }
+	public final boolean checkoutBook(String username, String barcode) { return checkoutBook(Username.from(username), Barcode.from(barcode)); }
 
 	/**
 	*
@@ -394,23 +394,23 @@ public final class Library {
 
 	/**
 	*
-	* String adapter for convenience; see {@link #requestExistingBook(Isbn, Username)} for documentation
+	* String adapter for convenience; see {@link #requestUnregisteredBook(Username, Isbn)} for documentation
+	 * @param isbn  String
+	 * @param   String
 	*
-	* @param isbn  String
-	* @param   String
 	* @return boolean
 	*/
-	public final boolean requestExistingBook(String isbn, String username) { return requestExistingBook(Isbn.from(isbn), Username.from(username)); }
+	public final boolean requestRegisteredBook(String username, String isbn) { return requestUnregisteredBook(Username.from(username), Isbn.from(isbn)); }
 
 	/**
 	*
-	* String adapter for convenience; see {@link #requestNewBook(BookDescription, Username)} for documentation
+	* String adapter for convenience; see {@link #requestUnregisteredBook(Username, BookDescription)} for documentation
+	 * @param username  String
+	 * @param description  BookDescription
 	*
-	* @param description  BookDescription
-	* @param username  String
 	* @return boolean
 	*/
-	public final boolean requestNewBook(BookDescription description, String username) { return requestNewBook(description, Username.from(username)); }
+	public final boolean requestUnregisteredBook(String username, BookDescription description) { return requestUnregisteredBook(Username.from(username), description); }
 
 	/**
 	*

@@ -33,8 +33,6 @@ Username someUsername = Username.from("krl");
 			.build();               
 			
 
-	
-
 
 ////////Library 
 
@@ -46,7 +44,7 @@ Username someUsername = Username.from("krl");
 	o("\n#register(Patron) -- add to library database -> returns Username of added Patron:\n"+
 
 
-	// registering existing Patron
+	// register Patron
 	//-------------------------------------------------------------------
 			library.register(somePatron)
 	//-------------------------------------------------------------------
@@ -56,7 +54,7 @@ Username someUsername = Username.from("krl");
 	o(
 
 
-    // combining registering and building
+    // combine registering and building
 	//-------------------------------------------------------------------
 			library.register(Patron.with()  // with vs build... ? has to be consistent with Book.buildDescription
 					.username("leiderfort123")
@@ -82,7 +80,7 @@ Username someUsername = Username.from("krl");
 	o(
 
 
-	// combining registering and building a BookDescription
+	// combine registering and building a BookDescription
 	//-------------------------------------------------------------------
 			library.register(BookDescription.with()   					// Book.with() can be used too, but this may be subject to change
 					.isbn("0-00-000000-X") 							    // Beware: CHECK bit validation is not implemented
@@ -94,10 +92,9 @@ Username someUsername = Username.from("krl");
 
 
 	);
-	o("\n	*registering more stuff*  \n");
+	o("\n	*registering some more*  \n");
 
 
-	// registering
 			o(library.register(Book.with().isbn("111-1-22-224444-3").title("Brudermord").author("Kain Able").build()));   
 			o(library.register(Patron.with().username(someUsername).firstName("Karl-Xaver").lastName("Horstheimer").birthdate(1902, 11, 2).build()));
 			o(library.register(Book.with().isbn("1-29-496789-3").title("Waldfeste unter Tage").author("Max Schraat").build()));
@@ -105,7 +102,9 @@ Username someUsername = Username.from("krl");
 			o(library.register(Book.with().isbn("333-3-11-440949-6").title("Dampfschifffahrt leicht gemacht").author("Spina Topp").build()));
 			o(library.register(Book.with().isbn(someIsbn).title("~Some Book Title~").author("some book author").build()));
 
+
 			o("\n   * some validation tests *   \n");
+
 
 			try {
 			// wrong format
@@ -121,6 +120,24 @@ Username someUsername = Username.from("krl");
 
 			} catch(IllegalStateException validationFail) {
 				o("IllegalStateException:" + validationFail.getMessage());
+			}
+
+
+			// silently registering some more Patrons
+				String[] zauberUsernames = {"hanscas", "mynpeep", "clachau", "leona", "ludosett"};   // keep these visible for later tests
+			{
+				String[] firstNames = {"Hans", "Mynheer", "Clawdia", "Leo", "Lodovico"};
+				String[] lastNames = {"Castorp", "Peeperkorn", "Chauchat", "Naphta", "Settembrini"};
+				int[][] birthdates = { {1889, 4, 1}, {1881, 6, 19}, {1892, 12, 3}, {1870, 12, 12}, {1868, 7, 3} };
+				
+				for (int i = 0; i < zauberUsernames.length; i++) {
+					library.register(Patron.with()
+							.username(zauberUsernames[i])
+							.firstName(firstNames[i])
+							.lastName(lastNames[i])
+							.birthdate(birthdates[i][0], birthdates[i][1], birthdates[i][2])
+							.build());
+				}
 			}
 
 
@@ -150,7 +167,7 @@ Username someUsername = Username.from("krl");
 
 	// checkout (borrow) a book with it's barcode and the patrons username
 	//-------------------------------------------------------------------
-			library.checkoutBook("3-11-345672-4:1", "mitsubishi666")
+			library.checkoutBook("mitsubishi666", "3-11-345672-4:1")
 	//-------------------------------------------------------------------
 
 
@@ -162,7 +179,7 @@ Username someUsername = Username.from("krl");
 	//-------------------------------------------------------------------
 		try {
 
-			library.checkoutBook("3-11-345672-4:1", "leiderfort123");
+			library.checkoutBook("leiderfort123", "3-11-345672-4:1");
 
 		} catch(IllegalStateException maybeBorrowed) {
 			o("IllegalStateException: " + maybeBorrowed.getMessage());
@@ -184,10 +201,10 @@ Username someUsername = Username.from("krl");
 	o("\n  *running a checkout/return loop for TIMES_BORROWED_BEFORE_REMOVAL (50)*  \n");
 
 
-	// checkout/return loop till 
+	// test removal of books due to wear and tear
 	for (int i = 1; i <= Library.TIMES_BORROWED_BEFORE_REMOVAL; i++) {   		
 	o(
-			" checkout: " + library.checkoutBook("3-11-345672-4:1", "krl") +
+			" checkout: " + library.checkoutBook("krl", "3-11-345672-4:1") +
 			", return: " + library.returnBook("3-11-345672-4:1") +
 			" ---- " + i
 	);
@@ -198,20 +215,20 @@ Username someUsername = Username.from("krl");
 
 			try {
 			// this should not work anymore - book was removed
- 			library.checkoutBook("3-11-345672-4:1", "krl");
+ 			library.checkoutBook("krl", "3-11-345672-4:1");
 
 			} catch(IllegalArgumentException mayBeNotFound) {
 				o("IllegalArgumentException: " + mayBeNotFound.getMessage());
 			}
 	
 
-	o("\n#requestExistingBook(Isbn, Username) ---> returns false | true when REQUESTS_FOR_RESTOCKING (2) is reached and the book is moved to a shopping list");
+	o("\n#requestRegisteredBook(Isbn, Username) ---> returns false | true when REQUESTS_FOR_RESTOCKING (2) is reached and the book is moved to a shopping list");
 	o("\n   *mitsubishi666 requests 3-11-345672-4*\n" + 
 
 
-	// it's gone, patrons can now request a new copy with the isbn
+	// patrons can now request a new copy with the isbn
 	//-------------------------------------------------------------------
-			library.requestExistingBook("3-11-345672-4", "mitsubishi666")
+			library.requestRegisteredBook("mitsubishi666", "3-11-345672-4")
 	//-------------------------------------------------------------------
 		
 
@@ -223,7 +240,7 @@ Username someUsername = Username.from("krl");
 	// get a List<Patron> that holds the successful requesters
 	//-------------------------------------------------------------------
 		library.getRequestsList("3-11-345672-4")
-				.size()														// this is the same as getRequestsListAsInt(Isbn)
+				.size() 												  // 1,  this is the same as getRequestsListAsInt(Isbn)
 	//-------------------------------------------------------------------
 	
 
@@ -232,22 +249,43 @@ Username someUsername = Username.from("krl");
 
 
 	// multiple requests of same patron should not be counted
-	o(library.requestExistingBook("3-11-345672-4", "mitsubishi666"));
-	o(library.requestExistingBook("3-11-345672-4", "mitsubishi666"));
-	o(library.requestExistingBook("3-11-345672-4", "mitsubishi666"));
-	o("Requests:" + library.getRequestsAsInt("3-11-345672-4"));
+	o(library.requestRegisteredBook("mitsubishi666", "3-11-345672-4"));  // false
+	o(library.requestRegisteredBook("mitsubishi666", "3-11-345672-4"));  // false
+	o(library.requestRegisteredBook("mitsubishi666", "3-11-345672-4"));  // false
+	o("Requests:" + library.getRequestsAsInt("3-11-345672-4")); 	 	 // still 1
 
 
 	o("\n but a request from a different patron should work:");
 	o("\n   *krl requests 3-11-345672-4*\n" + 
 
-
-		library.requestExistingBook("3-11-345672-4", "krl")
+		// another patron requests
+		library.requestRegisteredBook("krl", "3-11-345672-4")  			// true
 			+ "\n returns true if REQUESTS_FOR_RESTOCK (2) is reached -> item added to shopping list, request reset"
 
+	);
+	o("Requests:" + library.getRequestsAsInt("3-11-345672-4"));  // has been reset to zero
+	o("\n#requestUnregisteredBook(Username, BookDescription) --> request new Book (= create entry with 0 copies, returns true if entry was created) \n" +
+
+
+	// requests for unregistered books have to be submitted with the BookDescription
+	//----------------------------------------------------------------------------------------
+			library.requestUnregisteredBook("mitsubishi666", BookDescription.with()             // TODO method name is misleading (request vs register)
+																   .title("Mein Mitsubishi")
+																   .author("Arne Autobahn")
+																   .isbn("4-44-444444-4")  
+																   .build())    				// book is now registered with 0 copies
+	//----------------------------------------------------------------------------------------
+		 
 
 	);
-	o("Requests:" + library.getRequestsAsInt("3-11-345672-4"));  // should have been reset to zero
+	o("\nNow this Book needs 4 more requests till REQUESTS_FOR_AQUISITION (5) is reached and the isbn is added to the shopping list (true).");
+				// TODO would be nicer to still count them for shopping list ordering
+	
+	for (String username : zauberUsernames)  // 5 
+		o(username + " requests... " + library.requestRegisteredBook(username, "4-44-444444-4")); 
+	
+
+	o("Requests for a book already on shopping list have no effect -> false");  
 
 
 
