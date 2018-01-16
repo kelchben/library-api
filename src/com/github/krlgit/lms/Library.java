@@ -296,7 +296,8 @@ public final class Library {
 	 *  Patron<->AccountEntry should be refactored/merged first, with appropiate Interface
 	 */
 
-// *SPECIAL QUERIES DEMANDED BY HOMEWORK ASSIGNMENT* ----------------------------->
+
+// *QUERIES DEMANDED IN HOMEWORK ASSIGNMENT* ----------------------------->
 
 
 	/**

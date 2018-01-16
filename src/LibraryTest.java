@@ -1,6 +1,11 @@
 import com.github.krlgit.lms.*;
 import static java.lang.System.out;
 
+import java.util.List;
+import java.util.Map;
+
+// TODO reduce verbosity, most infos should be in doc
+
 public class LibraryTest {
 
 	private static void o(Object o) {   // bla
@@ -94,14 +99,13 @@ Username someUsername = Username.from("krl");
 	);
 	o("\n	*registering some more*  \n");
 
-
 			o(library.register(Book.with().isbn("111-1-22-224444-3").title("Brudermord").author("Kain Able").build()));   
 			o(library.register(Patron.with().username(someUsername).firstName("Karl-Xaver").lastName("Horstheimer").birthdate(1902, 11, 2).build()));
 			o(library.register(Book.with().isbn("1-29-496789-3").title("Waldfeste unter Tage").author("Max Schraat").build()));
 			o(library.register(Book.with().isbn("9-29-596789-3").title("Mi mi mi").author("O. Opera").build()));
 			o(library.register(Book.with().isbn("333-3-11-440949-6").title("Dampfschifffahrt leicht gemacht").author("Spina Topp").build()));
-			o(library.register(Book.with().isbn(someIsbn).title("~Some Book Title~").author("some book author").build()));
 
+			Barcode someBarcode = (library.register(Book.with().isbn(someIsbn).title("~Some Book Title~").author("some book author").build()));
 
 			o("\n   * some validation tests *   \n");
 
@@ -269,11 +273,11 @@ Username someUsername = Username.from("krl");
 
 	// requests for unregistered books have to be submitted with the BookDescription
 	//----------------------------------------------------------------------------------------
-			library.requestUnregisteredBook("mitsubishi666", BookDescription.with()             // TODO method name is misleading (request vs register)
-																   .title("Mein Mitsubishi")
-																   .author("Arne Autobahn")
-																   .isbn("4-44-444444-4")  
-																   .build())    				// book is now registered with 0 copies
+			library.requestUnregisteredBook("mitsubishi666", BookDescription.with()          // TODO method name is misleading (request vs register)
+															   .title("Mein Mitsubishi")
+															   .author("Arne Autobahn")
+															   .isbn("4-44-444444-4")  
+															   .build())    				// book is now registered with 0 copies
 	//----------------------------------------------------------------------------------------
 		 
 
@@ -281,13 +285,58 @@ Username someUsername = Username.from("krl");
 	o("\nNow this Book needs 4 more requests till REQUESTS_FOR_AQUISITION (5) is reached and the isbn is added to the shopping list (true).");
 				// TODO would be nicer to still count them for shopping list ordering
 	
+	// trying if this needs 5 requests 
 	for (String username : zauberUsernames)  // 5 
 		o(username + " requests... " + library.requestRegisteredBook(username, "4-44-444444-4")); 
 	
 
-	o("Requests for a book already on shopping list have no effect -> false");  
+	o("Requests for a book already on shopping list have no effect -> false"); 
+	o("\n#getCirculationHistory(Barcode) --> see how many times a copy was borrowed and by whom");
+
+	
+	// borrowing the same book a couple of times...
+	for (String str : zauberUsernames) {
+		library.checkoutBook(Username.from(str), someBarcode);
+		library.returnBook(someBarcode);
+	}
 
 
+	// get a books circulation history 
+	//----------------------------------------------------------------------------------------
+	List<Patron> someBooksHistory = library.getCirculationHistory(someBarcode);					// BEWARE: deep copy!
+	//----------------------------------------------------------------------------------------
+
+
+	o(
+	// now you can to stuff like
+			someBarcode + " has been borrowed " + someBooksHistory.size() + " times:  " + someBooksHistory
+	);
+
+
+	o("\n#getCurrentOwners(Isbn) ---> list all circulating copies of a book with the corresponding Patrons\n");
+
+
+	// get the owners of a books circulating copies as Map<Barcode,Patron>
+	//----------------------------------------------------------------------------------------
+		library.getCurrentOwners(someIsbn);					   // BEWARE: deep copy!
+	//----------------------------------------------------------------------------------------
+	
+
+	// borrow a book that has multiple copies available
+	{
+		int copyId = 1;
+		for (String username : zauberUsernames) {
+		library.checkoutBook(username, "0-00-000000-X:" + copyId);
+		copyId++;
+		}
+	}
+
+	// print the map...
+	o(library.getCurrentOwners("0-00-000000-X"));
+
+
+
+		
 
 /////////////// other
 
