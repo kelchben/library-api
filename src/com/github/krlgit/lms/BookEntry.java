@@ -124,9 +124,10 @@ final class BookEntry {
 		return new ArrayList<>(requests);
 	}
 
+	// TODO remove hacky "\n", handle formatting printouts correctly
 	@Override
 	public String toString() {
-		return description.title() + "| ISBN: " + description.isbn() + "| Copies: " + copies.size();
+		return "\n" + description.title() + "| ISBN: " + description.isbn() + "| Copies: " + copies.size();
     //TODO Copies:  available | unavailable
 	}
 
