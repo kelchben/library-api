@@ -7,13 +7,16 @@ import java.util.List;
 
 public class LibraryTest {
 
+
     private static void o(Object o) {   // bla
         out.println(o);
     }
 
     public static void main(String[] args) {
 
-        
+
+
+//--------------------------------> START HERE <----------------------------------
 
 
 //Isbns
@@ -23,18 +26,18 @@ Isbn someIsbn = Isbn.from("978-3-16-148410-0");            // can be ISBN10 or I
 Username someUsername = Username.from("krl");
 
 //BookDescriptions
-    BookDescription someBookDescription = BookDescription.with()  // new BookDescription.Builder()
-            .isbn("3-11-345672-4")                                  // uses Isbn.from(String)
-            .title("Arbeitsweise einer EDVA")
-            .author("KOMBINAT DATENVERARBEITUNG")
-            .build();
+BookDescription someBookDescription = BookDescription.with()  // new BookDescription.Builder
+                                      .isbn("3-11-345672-4")               // uses Isbn.from(String)
+                                      .title("Arbeitsweise einer EDVA")
+                                      .author("KOMBINAT DATENVERARBEITUNG")
+                                      .build();
 //Patrons
-    Patron somePatron = Patron.with()                                // new Patron.Builder()
-            .username("mitsubishi666")                             // uses Username.from(String)
-            .firstName("Arne")
-            .lastName("Autobahn")
-            .birthdate(2002, 2, 2)                              // birthdate needed for "uniqueness" check 
-            .build();               
+Patron somePatron = Patron.with()                           // new Patron.Builder
+                    .username("mitsubishi666")              // uses Username.from(String)
+                    .firstName("Arne")
+                    .lastName("Autobahn")
+                    .birthdate(2002, 2, 2)                  // birthdate needed for "uniqueness" check 
+                    .build();               
             
 
 
@@ -98,50 +101,50 @@ Username someUsername = Username.from("krl");
     );
     o("\n  *registering some more*  \n");
 
-            o(library.register(Book.with().isbn("111-1-22-224444-3").title("Brudermord").author("Kain Able").build()));   
-            o(library.register(Patron.with().username(someUsername).firstName("Karl-Xaver").lastName("Horstheimer").birthdate(1902, 11, 2).build()));
-            o(library.register(Book.with().isbn("1-29-496789-3").title("Waldfeste unter Tage").author("Max Schraat").build()));
-            o(library.register(Book.with().isbn("9-29-596789-3").title("Mi mi mi").author("O. Opera").build()));
-            o(library.register(Book.with().isbn("333-3-11-440949-6").title("Dampfschifffahrt leicht gemacht").author("Spina Topp").build()));
+    o(library.register(Book.with().isbn("111-1-22-224444-3").title("Brudermord").author("Kain Able").build()));   
+    o(library.register(Patron.with().username(someUsername).firstName("Karl-Xaver").lastName("Horstheimer").birthdate(1902, 11, 2).build()));
+    o(library.register(Book.with().isbn("1-29-496789-3").title("Waldfeste unter Tage").author("Max Schraat").build()));
+    o(library.register(Book.with().isbn("9-29-596789-3").title("Mi mi mi").author("O. Opera").build()));
+    o(library.register(Book.with().isbn("333-3-11-440949-6").title("Dampfschifffahrt leicht gemacht").author("Spina Topp").build()));
 
-            Barcode someBarcode = (library.register(Book.with().isbn(someIsbn).title("~Some Book Title~").author("some book author").build()));
+    Barcode someBarcode = (library.register(Book.with().isbn(someIsbn).title("~Some Book Title~").author("some book author").build()));
 
-            o("\n   * some validation tests *   \n");
-
-
-            try {
-            // wrong format
-            library.register(Book.with().isbn(someIsbn + "more").title ("~Some more Book Title~").author("some more book author").build());
-
-            } catch(IllegalArgumentException validationFail) {
-                o("IllegalArgumentException:" + validationFail.getMessage());
-            }
-
-            try {
-            // missing parameter
-            library.register(Book.with().title("Incomplete").author("Me").build());
-
-            } catch(IllegalStateException validationFail) {
-                o("IllegalStateException:" + validationFail.getMessage());
-            }
+    o("\n   * some validation tests *   \n");
 
 
-            // silently registering some more Patrons
-                String[] zauberUsernames = {"hanscas", "mynpeep", "clachau", "leona", "ludosett"};   // keep these visible for later tests
-            {
-                String[] firstNames = {"Hans", "Mynheer", "Clawdia", "Leo", "Lodovico"};
-                String[] lastNames = {"Castorp", "Peeperkorn", "Chauchat", "Naphta", "Settembrini"};
-                int[][] birthdates = { {1889, 4, 1}, {1881, 6, 19}, {1892, 12, 3}, {1870, 12, 12}, {1868, 7, 3} };
-                
-                for (int i = 0; i < zauberUsernames.length; i++) {
-                    library.register(Patron.with()
-                                     .username(zauberUsernames[i])
-                                     .firstName(firstNames[i])
-                                     .lastName(lastNames[i])
-                                     .birthdate(birthdates[i][0], birthdates[i][1], birthdates[i][2])
-                                     .build());
-                }
-            }
+    try {
+    // wrong format
+    library.register(Book.with().isbn(someIsbn + "more").title ("~Some more Book Title~").author("some more book author").build());
+
+    } catch(IllegalArgumentException validationFail) {
+        o("IllegalArgumentException:" + validationFail.getMessage());
+    }
+
+    try {
+    // missing parameter
+    library.register(Book.with().title("Incomplete").author("Me").build());
+
+    } catch(IllegalStateException validationFail) {
+        o("IllegalStateException:" + validationFail.getMessage());
+    }
+
+
+    // silently registering some more Patrons
+        String[] zauberUsernames = {"hanscas", "mynpeep", "clachau", "leona", "ludosett"};   // keep these visible for later tests
+    {
+        String[] firstNames = {"Hans", "Mynheer", "Clawdia", "Leo", "Lodovico"};
+        String[] lastNames = {"Castorp", "Peeperkorn", "Chauchat", "Naphta", "Settembrini"};
+        int[][] birthdates = { {1889, 4, 1}, {1881, 6, 19}, {1892, 12, 3}, {1870, 12, 12}, {1868, 7, 3} };
+        
+        for (int i = 0; i < zauberUsernames.length; i++) {
+            library.register(Patron.with()
+                             .username(zauberUsernames[i])
+                             .firstName(firstNames[i])
+                             .lastName(lastNames[i])
+                             .birthdate(birthdates[i][0], birthdates[i][1], birthdates[i][2])
+                             .build());
+        }
+    }
 
 
     //        
