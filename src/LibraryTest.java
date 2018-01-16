@@ -50,7 +50,7 @@ Username someUsername = Username.from("krl");
 
     // register Patron
     //-------------------------------------------------------------------
-            library.register(somePatron)
+            library.register(somePatron)								   // returns Username
     //-------------------------------------------------------------------
 
 
@@ -76,7 +76,7 @@ Username someUsername = Username.from("krl");
 
     // register Book for existing BookDescription
     //-------------------------------------------------------------------
-            library.register(someBookDescription)
+            library.register(someBookDescription)						   // returns Barcode
     //-------------------------------------------------------------------
 
 
