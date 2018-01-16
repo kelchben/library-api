@@ -25,10 +25,6 @@ import java.util.Set;
  * @author ag08
  * 
  */
-/**
- * @author princess
- *
- */
 public final class Library {
 
 
