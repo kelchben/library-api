@@ -133,7 +133,7 @@ public final class Library {
 	 * @throws IllegalArgumentException if books 
 	 *         Isbn is not found in system
 	 */
-	public final Barcode registerAdditionalCopy(Isbn isbn) {
+	public final Barcode registerAdditionalCopyOf(Isbn isbn) {
 		return fetchEntry(isbn)
 				.addBookCopy()
 				.barcode();
@@ -251,16 +251,21 @@ public final class Library {
 		Patron patron = fetchEntry(username).patron();
 		BookEntry entry = fetchEntry(isbn);
 
-		if ( !shoppingList.contains(isbn) && 
-				!entry.hasAvailableCopy() &&  
-				entry.addToRequests(patron) == entry.requestsNeeded() ) { // addToRequests returns requests.size( 
+		if (
+				   !shoppingList.contains(isbn)  	
+				&& !entry.hasAvailableCopy()		
+				&& entry.addToRequests(patron) == entry.requestsNeeded()  
+				     	// adds patron to requests Set and returns it's size as int
+												  
+
+	 	   ) {
 
 			entry.clearRequests();
 			shoppingList.add(isbn);  
-			return true; 
+			return true;   // book will be aquired now
 		}
 
-		return false;
+		return false;  //
 	}
 
 
@@ -308,8 +313,9 @@ public final class Library {
 	 */
 	public final Map<Barcode, Patron> getCurrentOwners(Isbn isbn) {
 		Map<Barcode, Patron> owners = new HashMap<>();
+		List<BookCopy> copies = fetchEntry(isbn).copies();
 
-		for (BookCopy copy : fetchEntry(isbn).copies()) {
+		for (BookCopy copy : copies) {
 			if (copy.isCirculating()) {
 				owners.put(copy.barcode(), copy.lastOwner());
 			}
@@ -351,7 +357,7 @@ public final class Library {
 	 * CURRENTLY UNDOCUMENTED
 	 */
 	@SuppressWarnings("unchecked") 
-	public final List<Book> getAllCopies(Isbn isbn) {  
+	public final List<Book> getAllCopies(Isbn isbn) {   // Book hides BookCopy
 		return (List<Book>)(List<?>)fetchEntry(isbn).copies(); // hacky unchecked double cast - find a better way with generics
 
 	}
@@ -360,12 +366,12 @@ public final class Library {
 
 	/**
 	*
-	* String adapter for convenience; see {@link #registerAdditionalCopy(Isbn)} for documentation
+	* String adapter for convenience; see {@link #registerAdditionalCopyOf(Isbn)} for documentation
 	*
 	* @param isbn String
 	* @return Barcode
 	*/
-	public final Barcode registerAdditionalCopy(String isbn) { return registerAdditionalCopy(Isbn.from(isbn)); }
+	public final Barcode registerAdditionalCopy(String isbn) { return registerAdditionalCopyOf(Isbn.from(isbn)); }
 
 	/**
 	*

@@ -126,7 +126,7 @@ final class BookEntry {
 
 	@Override
 	public String toString() {
-		return description.title() + " ISBN: " + description.isbn() + " Copies: " + copies.size();
+		return description.title() + "| ISBN: " + description.isbn() + "| Copies: " + copies.size();
     //TODO Copies:  available | unavailable
 	}
 

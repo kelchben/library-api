@@ -47,6 +47,11 @@ public final class Patron {
 			return this;
 			}
 
+		public Builder username(Username username) { 
+			this.username = username; 
+			return this;
+			}
+
 		public Builder firstName(String firstName) {
 			this.firstName = firstName;
 			return this;

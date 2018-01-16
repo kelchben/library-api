@@ -119,18 +119,22 @@ public class BookDescription {
 			 * @throws IllegalStateException when not all mandatory parameters are set
 			 */
 			public BookDescription build() {  //TODO refactor to... create? submit?  --> no. every programmer knows build, this is not for endusers
-			if (this.isbn == null) {
+
+			if (isbn == null) {
 				throw new IllegalStateException(
 						"Required parameter isbn is missing.");
 			}
-			if (this.title == null) {
+
+			if (title == null) {
 				throw new IllegalStateException(
 						"Required parameter title is missing");
 			}
-			if (this.author == null) {
+
+			if (author == null) {
 				throw new IllegalStateException(
 						"Required parameter author is missing");
 			}
+
 				return new BookDescription(this);
 			}
 

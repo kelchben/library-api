@@ -60,7 +60,7 @@ class BookCopy implements Book {
 
 	@Override
 	public final boolean isAtCapacity(int MAX_CIRCULATION_HISTORY_SIZE) {  // should this be in caps? parameter is not a constant
-		return circulationHistory.size() >= MAX_CIRCULATION_HISTORY_SIZE;
+		return circulationHistory.size() > MAX_CIRCULATION_HISTORY_SIZE;
 	}
 
 	@Override
