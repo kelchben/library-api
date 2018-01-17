@@ -27,7 +27,7 @@ final class BookEntry {
 	private BookEntry(BookDescription description) {
 		this.description = description;
 		copies = new HashSet<>();
-		requests = new HashSet<>() ;
+		requests = new HashSet<>();
 		requestsNeeded = 0;
 	}
 
@@ -124,10 +124,14 @@ final class BookEntry {
 		return new ArrayList<>(requests);
 	}
 
-	// TODO remove hacky "\n", handle formatting printouts correctly
+	// TODO remove hacky "\n" and handle formatting printouts correctly
 	@Override
 	public String toString() {
-		return "\n" + description.title() + "| ISBN: " + description.isbn() + "| Copies: " + copies.size();
+		return "\n"
+				+ "Title: " +  description.title() + " "
+				+ "| Author: " + description.author() + " "
+				+ "| ISBN: " + description.isbn() + " "
+				+ "| Copies: " + copies.size();
     //TODO Copies:  available | unavailable
 	}
 

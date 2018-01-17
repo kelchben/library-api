@@ -41,14 +41,13 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
             
 
 
-////////Library 
 
 //-------------------------------------------
     Library library = new Library();                    
 //-------------------------------------------
 
     
-    o("\n#register(Patron) -- add to library database -> returns Username of added Patron:\n"+
+    o("\n#register(Patron) -- add to library -> returns Username of added Patron:\n"+
 
 
     // register Patron
@@ -74,7 +73,7 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
 
 
     );
-    o("\n#register(BookDescription) -- add to library database -> returns auto-generated Barcode (e.g. to put on physical BookCopy)" +
+    o("\n#register(BookDescription) -- add to library -> returns auto-generated Barcode (e.g. to put on physical BookCopy)\n" +
 
 
     // register Book for existing BookDescription
@@ -90,7 +89,7 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
     // combine registering and building a BookDescription
     //-------------------------------------------------------------------
             library.register(BookDescription.with()                       // Book.with() can be used too, but this may be subject to change
-                             .isbn("0-00-000000-X")                                 // Beware: CHECK bit validation is not implemented
+                             .isbn("0-00-000000-X")                       // Beware: CHECK bit validation is not implemented
                              .title("Holzige Holothurien")
                              .author("Hans Hobel")
                              .build()
@@ -113,8 +112,12 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
 
 
     try {
-    // wrong format
-    library.register(Book.with().isbn(someIsbn + "more").title ("~Some more Book Title~").author("some more book author").build());
+    // wrong isbn format
+    library.register(Book.with()
+                     .isbn(someIsbn + "more")
+                     .title ("~Some more Book Title~")
+                     .author("some more book author")
+                     .build());
 
     } catch(IllegalArgumentException validationFail) {
         o("IllegalArgumentException:" + validationFail.getMessage());
@@ -122,7 +125,10 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
 
     try {
     // missing parameter
-    library.register(Book.with().title("Incomplete").author("Me").build());
+    library.register(Book.with()
+                     .title("Incomplete")
+                     .author("Me")
+                     .build());
 
     } catch(IllegalStateException validationFail) {
         o("IllegalStateException:" + validationFail.getMessage());
@@ -130,7 +136,7 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
 
 
     // silently registering some more Patrons
-        String[] zauberUsernames = {"hanscas", "mynpeep", "clachau", "leona", "ludosett"};   // keep these visible for later tests
+        String[] zauberUsernames = {"hanscas", "mynpeep", "clachau", "leona", "ludosett"};   // visible for later tests
     {
         String[] firstNames = {"Hans", "Mynheer", "Clawdia", "Leo", "Lodovico"};
         String[] lastNames = {"Castorp", "Peeperkorn", "Chauchat", "Naphta", "Settembrini"};
@@ -238,7 +244,8 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
     //-------------------------------------------------------------------
         
 
-    );o("\n\n#getRequestsList(Isbn) and #getRequestsAsInt(Isbn) ---> get the number of filed requests for an Isbn \n");
+    );
+    o("\n\n#getRequestsList(Isbn) and #getRequestsAsInt(Isbn) ---> get the number of filed requests for an Isbn \n");
     o("Testing... how often was 3-11-345672-4 requested ?\n Requests: " +
     
 

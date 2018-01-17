@@ -21,7 +21,7 @@ import java.time.LocalDate;
  * @see BookDescription
  *
  */
-public final class Patron {
+public class Patron {
 	private final Username username; //  is it conceptually acceptable to keep this here and not in AccountEntry?
 //	yes: a Patron stops being a patron when a he has no username, BUT username has to be immutable
 	private final String firstName;

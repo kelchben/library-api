@@ -9,7 +9,7 @@ import java.util.List;
  * Implementation Class
  *
  */
-class BookCopy implements Book {
+final class BookCopy implements Book {
 	private final Barcode barcode;
 	private final BookDescription description;  // needed? can get this through barcode/isbn with query
 	private final Deque<Patron> circulationHistory;
