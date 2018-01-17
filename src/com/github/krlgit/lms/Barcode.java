@@ -21,7 +21,7 @@ public final class Barcode {
 	/**
 	 * Converts a String to the Barcode type.<br>
 	 * The input String has to be of the format <b>[isbn:copyId]</b>, 
-	 * with ISBN10 and ISBN13 being allowed and copy Id being an <tt>Integer > 0</tt>.
+	 * with ISBN10 and ISBN13 being allowed and copy Id being an <tt>Integer greater 0</tt>.
 	 * <p>
 	 * Examples:
 	 * <p>
@@ -36,8 +36,8 @@ public final class Barcode {
 	 * 
 	 * @param barcode a String following the contract <b>[isbn:copyId]</b>
 	 * @return the Barcode Object constructed from the input String
-	 * @throws IllegalArgumentException if <code>String.length() > 23 digits</code>
-	 * @throws IllegalArgumentException if <code>copyId <= 0</code>
+	 * @throws IllegalArgumentException if <tt>String.length() greater than 23 digits</tt>
+	 * @throws IllegalArgumentException if <tt>copyId less or equal 0</tt>
 	 * @throws IllegalArgumentException if Isbn validation fails
 	 * @see Isbn#from(String)
 	 * @see Username#from(String)

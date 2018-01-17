@@ -38,15 +38,16 @@ public class BookDescription {
 		 * except for Isbn, which can be provided as Isbn Object or String.
 		 * <p>
 		 * Example usage:
-		 * <p><code>
+         * <p>
+		 * <code>
 		 * BookDescription.with()<br>
 			.title("Arbeitsweise einer EDVA")<br>
 			.author("KOMBINAT DATENVERARBEITUNG")<br>
 			.isbn("3-11-345672-4")<br>
 			.build();
-		 * <code><p>
-		 * 
-		 * 
+           </code>
+		 * <p>
+		 *
 		 * @return a BookDescription.Builder to initiate object construction
 		 */
 		public static BookDescription.Builder with() {

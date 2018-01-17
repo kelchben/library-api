@@ -10,7 +10,7 @@ import com.github.krlgit.lms.BookDescription;
  * (<i>this Interface is what someone who uses the API sees, when internally BookCopy objects are used</i>)
  * 
  * <p> 
- * <b> THIS CLASS IS CURRENTLY UNDOCUMENTED,<br> FOR DEMONSTRATION PURPOSES ONLY,</br> AND MAY BE SUBJECT TO CHANGE</b>
+ * <b> THIS CLASS IS CURRENTLY UNDOCUMENTED,<br> FOR DEMONSTRATION PURPOSES ONLY,<br> AND MAY BE SUBJECT TO CHANGE</b>
  * <p>
  * 
  * @author ag08

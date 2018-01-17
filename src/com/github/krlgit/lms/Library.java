@@ -412,7 +412,7 @@ public final class Library {
     * String adapter for convenience; see {@link #getCurrentOwners(Isbn)} for documentation
     *
     * @param isbn String
-    * @return Map<Barcode, Patron>
+    * @return Map of Barcode, Patron
     */
     public final Map<Barcode, Patron> getCurrentOwners(String isbn) { return getCurrentOwners(Isbn.from(isbn)); }
 
@@ -421,7 +421,7 @@ public final class Library {
     * String adapter for convenience; see {@link #getCirculationHistory(Barcode)} for documentation
     *
     * @param barcode  String
-    * @return List<Patron>
+    * @return List of Patron
     */
     public final List<Patron> getCirculationHistory(String barcode) { return getCirculationHistory(Barcode.from(barcode)); }
 
@@ -430,7 +430,7 @@ public final class Library {
     * String adapter for convenience; see {@link #getAllCopies(Isbn)} for documentation
     *
     * @param isbn  String
-    * @return List<Book>
+    * @return List of Book
     */
     public final List<Book> getAllCopies(String isbn) { return getAllCopies(Isbn.from(isbn)); }
 
@@ -439,7 +439,7 @@ public final class Library {
     * String adapter for convenience; see {@link #getRequestsList(Isbn)} for documentation
     *
     * @param isbn String
-    * @return List<Patron>
+    * @return List of Patron
     */
     public final List<Patron> getRequestsList(String isbn) { return getRequestsList(Isbn.from(isbn)); }
 
