@@ -11,7 +11,6 @@ doc: http://htmlpreview.github.io/?https://github.com/krlgit/library-api/blob/ma
 - DIAGRAMS --- CREATE SOMETHING MORE USEFUL, haha !
 - test * in progress
 
-![](https://github.com/krlgit/library-api/blob/master/lms_nodep.png)
 ![](https://github.com/krlgit/library-api/blob/master/lms_dep.png)
 ![](https://github.com/krlgit/library-api/blob/master/Class%20Diagram1.png)
 
