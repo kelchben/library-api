@@ -2,6 +2,7 @@ import com.github.krlgit.lms.*;
 import static java.lang.System.out;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 // TODO reduce verbosity - most infos should be in doc
 
@@ -355,19 +356,19 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
     // TODO print shopping list
 
 
-    o("\n *registering 100_000 books and 50_000 patrons*\n");
+    o("\n *registering 100_000 books and 50_000 patrons --- please wait -- this could take a while*\n");
 
     // test if system can handle registering a high number of books/patrons
     {
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 100_000; i++) {
             library.register(BookDescription.with()
-                                 .isbn("1234" + Integer.toString(100000 + i))
+                                 .isbn("1234" + Integer.toString(100_000 + i))
                                  .title("Generic Title" + i)
                                  .author("Generic Author" + i)
                                  .build());
         }
         
-        for (int i = 0; i < 50000; i++) {
+        for (int i = 0; i < 50_000; i++) {
             library.register(Patron.with()
                                    .username("genuser" + i)
                                    .firstName("Gene" + i)
@@ -379,7 +380,20 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
     
     o("done");
 
+    o("\nlet 5000 random patrons checkout random books...\n");
 
+            for (int i = 0; i < 5000; i++) {
+                if (i % 20 == 0) out.print("\n");  // linebreaks
+                String randUsername = "genuser" + ThreadLocalRandom.current().nextInt(50_000);
+                String randBarcode = "1234"
+                        + (100_000 + ThreadLocalRandom.current().nextInt(100_000))
+                        + ":1";
+                try {
+                out.print(library.checkoutBook(randUsername, randBarcode) + "|");
+                } catch(RuntimeException e) {
+                    out.print("An Exception was thrown: " + e.getMessage() + "|");
+                }
+            }
     }
 }
 
