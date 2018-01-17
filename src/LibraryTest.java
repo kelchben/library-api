@@ -1,11 +1,23 @@
-import com.github.krlgit.lms.*;
 import static java.lang.System.out;
-
+import com.github.krlgit.lms.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 // TODO reduce verbosity - most infos should be in doc
 
+/**
+ * Testing the LMS, a good starting point to see how it can be used.
+ * <p>
+ * Essential info is formatted like this:
+ *
+ * <p>
+ * <code>
+ * //-----------------------------------------------
+ *          <br>library = new Library();
+ * //-----------------------------------------------
+ * </code>
+ *
+ */
 public class LibraryTest {
 
 
@@ -16,22 +28,25 @@ public class LibraryTest {
     public static void main(String[] args) {
 
 
-//--------------------------------> START HERE <----------------------------------
+//-------------------------------------------------------------------
+//                        START HERE
+//-------------------------------------------------------------------
 
+// elements...
 
-//Isbns
+//Isbn
 Isbn someIsbn = Isbn.from("978-3-16-148410-0");            // can be ISBN10 or ISBN13; "-" gets stripped for storage
 
-//Usernames
+//Username
 Username someUsername = Username.from("krl");
 
-//BookDescriptions
+//BookDescription
 BookDescription someBookDescription = BookDescription.with()  // new BookDescription.Builder
                                       .isbn("3-11-345672-4")               // uses Isbn.from(String)
                                       .title("Arbeitsweise einer EDVA")
                                       .author("KOMBINAT DATENVERARBEITUNG")
                                       .build();
-//Patrons
+//Patron
 Patron somePatron = Patron.with()                           // new Patron.Builder
                     .username("mitsubishi666")              // uses Username.from(String)
                     .firstName("Arne")
@@ -40,8 +55,7 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
                     .build();               
             
 
-
-
+// Library
 //-------------------------------------------
     Library library = new Library();                    
 //-------------------------------------------
@@ -384,14 +398,18 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
 
             for (int i = 0; i < 5000; i++) {
                 if (i % 20 == 0) out.print("\n");  // linebreaks
-                String randUsername = "genuser" + ThreadLocalRandom.current().nextInt(50_000);
+                String randUsername = "genuser"
+                        + ThreadLocalRandom.current().nextInt(50_000);
                 String randBarcode = "1234"
                         + (100_000 + ThreadLocalRandom.current().nextInt(100_000))
                         + ":1";
+
                 try {
+
                 out.print(library.checkoutBook(randUsername, randBarcode) + "|");
+
                 } catch(RuntimeException e) {
-                    out.print("An Exception was thrown: " + e.getMessage() + "|");
+                    o("An Exception was thrown: " + e.getMessage() + "|");
                 }
             }
     }
