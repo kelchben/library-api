@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.github.krlgit.lms</OriginalElement>
+  <nodes>
+    <node x="-117.85819327731099" y="-90.63025210084031">com.github.krlgit.lms.Username</node>
+    <node x="378.06932773109247" y="16.127100840336112">com.github.krlgit.lms.Patron.Builder</node>
+    <node x="369.438025210084" y="181.90966386554635">com.github.krlgit.lms.BookDescription</node>
+    <node x="-87.18277310924373" y="33.37605042016804">com.github.krlgit.lms.BookDescription.Builder</node>
+    <node x="-27.97163865546213" y="684.5462184873948">com.github.krlgit.lms.Library</node>
+    <node x="-129.159663865546" y="179.19117647058857">com.github.krlgit.lms.Patron</node>
+    <node x="182.95063025210095" y="519.8497899159663">com.github.krlgit.lms.BookEntry</node>
+    <node x="-157.16911764705878" y="548.4002100840336">com.github.krlgit.lms.AccountEntry</node>
+    <node x="395.8960084033613" y="-93.85924369747899">com.github.krlgit.lms.Isbn</node>
+    <node x="129.22268907563034" y="-38.96638655462186">com.github.krlgit.lms.Barcode</node>
+    <node x="260.5220588235295" y="-103.32773109243698">com.github.krlgit.lms.Book</node>
+    <node x="169.5220588235295" y="357.69327731092443">com.github.krlgit.lms.BookCopy</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.github.krlgit.lms.BookCopy" target="com.github.krlgit.lms.Book">
+      <point x="0.0" y="-61.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.6193884189980482" x="476.4369747899159" y="558.4999999999999" />
+  <SelectedNodes>
+    <node>com.github.krlgit.lms.AccountEntry</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
