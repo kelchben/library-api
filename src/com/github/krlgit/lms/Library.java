@@ -235,8 +235,8 @@ public final class Library {
     /**
      * CURRENTLY UNDOCUMENTED
      * 
-     * @param username Username
-     * @param isbn Isbn
+     * @param username  Username
+     * @param isbn  Isbn
      * 
      * @return false. true, if isbn was added to shopping list
      */
@@ -265,8 +265,8 @@ public final class Library {
     /**
      * CURRENTLY UNDOCUMENTED
      * 
-     * @param username Username
-     * @param description BookDescription
+     * @param username  Username
+     * @param description  BookDescription
      * 
      * @return true, if BookDescription was registered. false, if request failed
      */
@@ -363,8 +363,8 @@ public final class Library {
     *
     * String adapter for convenience; see {@link #registerAdditionalCopyOf(Isbn)} for documentation
     *
-    * @param isbn String
-    * @return Barcode
+    * @param isbn  String
+    * @return  Barcode
     */
     public final Barcode registerAdditionalCopy(String isbn) { return registerAdditionalCopyOf(Isbn.from(isbn)); }
 
