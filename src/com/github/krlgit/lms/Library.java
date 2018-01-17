@@ -9,19 +9,19 @@ import java.util.Set;
 
 
 /**
- * 
- * This class is the heart of the Library Managment System, as it
- * provides the main functionalities of a Library, like
+ *
+ * This class is the heart of the Library Management System, as it
+ * provides the main functionality of a Library, like
  * <p><ul>
  * <li> registration of Patrons and Books,
  * <li> checking out and reclaiming Books,
- * <li> handling Book requests from Patrons, 
- * <li> various queries 
- * </ul><p> 
+ * <li> handling Book requests from Patrons,
+ * <li> various queries
+ * </ul><p>
  * It uses and connects all classes of this package.
- * 
+ *
  * @author ag08
- * 
+ *
  */
 public final class Library {
 
@@ -29,14 +29,14 @@ public final class Library {
     /**
      * The number of times ({@value}) a Book can be checked out and returned
      * before it is removed from the System due to wear and tear.
-     * 
+     *
      * @see #checkoutBook(Username, Barcode)
      * @see #returnBook(Barcode)
      */
     public static final int TIMES_BORROWED_BEFORE_REMOVAL = 50;
 
     /**
-     * The max number of Books ({@value}) a Patron can have at 
+     * The max number of Books ({@value}) a Patron can have at
      * the same time.
      */
     public static final int BOOKS_ALLOWED_PER_PATRON = 10;
@@ -44,16 +44,16 @@ public final class Library {
     /**
      * The number of requests needed ({@value}), till a <b>new</b>
      * Book gets added to the Libraries shopping list.
-     * 
+     *
      * @see #requestUnregisteredBook(Username, Isbn)
      */
-    public static final int REQUESTS_FOR_AQUISITION = 5;
+    public static final int REQUESTS_FOR_ACQUISITION = 5;
 
     /**
-     * The number of requests needed ({@value}), till a Book that had 
+     * The number of requests needed ({@value}), till a Book that had
      * <b>previously existing</b> copies in the system
      * gets added to the Libraries shopping list.
-     * 
+     *
      * @see #requestUnregisteredBook(Username, BookDescription)
      */
     public static final int REQUESTS_FOR_RESTOCKING = 2;
@@ -64,12 +64,12 @@ public final class Library {
 
 
     /**
-     * Constructs a new, empty Library. 
+     * Constructs a new, empty Library.
      * Configuration in static class constants.
-     * 
+     *
      * @see #TIMES_BORROWED_BEFORE_REMOVAL
      * @see #BOOKS_ALLOWED_PER_PATRON
-     * @see #REQUESTS_FOR_AQUISITION
+     * @see #REQUESTS_FOR_ACQUISITION
      * @see #REQUESTS_FOR_RESTOCKING
      */
     public Library() {
@@ -81,17 +81,17 @@ public final class Library {
 
 // REGISTER ----------------------------------------------------->
 
-    /** 
-     * Adds the specified Patron to this library if he is not 
+    /**
+     * Adds the specified Patron to this library if he is not
      * already registered. Returns his Username.
-     * 
+     *
      * @param  patron  an unregistered Patron, not null
      * @return the now registered Patrons Username
      * @throws IllegalArgumentException if
      *         patron.username() is already taken
-     * @throws IllegalArgumentException if patron is 
+     * @throws IllegalArgumentException if patron is
      *           already registered with another username
-     * 
+     *
      */
     public final Username register(Patron patron)
             throws IllegalArgumentException {
@@ -100,18 +100,18 @@ public final class Library {
                 .username();
     }
 
-    /** 
+    /**
      * Adds a Book with the specified BookDescription
      * to this library if a Book with the same Isbn
-     * is not already registered. 
+     * is not already registered.
      * Generates and returns Barcode of the new Book.
-     * 
+     *
      * @param  description  the BookDescription of the Book to be added, not null
      * @return the Barcode generated for the added Book
      * @throws IllegalArgumentException if books
      *         Isbn is already in system
      */
-    public final Barcode register(BookDescription description) 
+    public final Barcode register(BookDescription description)
             throws IllegalArgumentException {
         return createEntry(description)
                 .addBookCopy()
@@ -119,12 +119,12 @@ public final class Library {
     }
 
     /**
-     * Add another Copy of a Book that is already registered with the library. 
+     * Add another Copy of a Book that is already registered with the library.
      * Returns the newly generated Barcode for the added Book.
-     * 
+     *
      * @param isbn  the Isbn number of the Book to be added, not null
      * @return the Barcode generated for the added Book
-     * @throws IllegalArgumentException if books 
+     * @throws IllegalArgumentException if books
      *         Isbn is not found in system
      */
     public final Barcode registerAdditionalCopyOf(Isbn isbn) {
@@ -143,29 +143,29 @@ public final class Library {
      * A cross reference is created:
      * <p><ul>
      * <li> the Book is added to the Patrons Account
-     * <li> the Patron is added to the Books circulationHistory 
+     * <li> the Patron is added to the Books circulationHistory
      * </ul><p>
-     * Returns <tt>true</tt> if the checkout succeded and 
-     * <tt>false</tt> if the checkout fails, due to the Patrons 
-     * Account currently holding the max number of Books allowed 
+     * Returns <tt>true</tt> if the checkout succeded and
+     * <tt>false</tt> if the checkout fails, due to the Patrons
+     * Account currently holding the max number of Books allowed
      * at the same time ({@value #BOOKS_ALLOWED_PER_PATRON}).
      * <p>
      * If a barcode from an already borrowed book is entered,
-     * an IllegalStateException is thrown. 
-     * <p> 
-     * The method changes the state of the Book to 
+     * an IllegalStateException is thrown.
+     * <p>
+     * The method changes the state of the Book to
      * <code>isCirculating == true.</code>
      * It can be reversed with {@link #returnBook(Barcode)}.
      * @param username  the Username of the involved Patron
      * @param barcode  the Barcode of the Book to borrow
-     * 
+     *
      * @return <tt>true</tt> if Patron is not at {@link #BOOKS_ALLOWED_PER_PATRON} limit
      * @throws IllegalStateException if book.isCirculating == true
      * @throws IllegalArgumentException if the Barcode is not found
      * @throws IllegalArgumentException if the Username is not found
      * @see #returnBook(Barcode)
      */
-    public final boolean checkoutBook(Username username, Barcode barcode) 
+    public final boolean checkoutBook(Username username, Barcode barcode)
             throws IllegalStateException {
 
         AccountEntry account = fetchEntry(username);
@@ -178,11 +178,11 @@ public final class Library {
                 .getCopyWith(barcode);
 
         if (copy.isCirculating()) {   // this should not be possible (duplicate barcode)
-            throw new IllegalStateException(    
+            throw new IllegalStateException(
                     "The copy " + barcode + " is not available. Borrowed by Patron " + copy.lastOwner().username());
         }
 
-        copy.setIsCirculating(true) 
+        copy.setIsCirculating(true)
         .appendCirculationHistory(account.patron());
 
         account.add(copy);
@@ -192,39 +192,39 @@ public final class Library {
 
 
     /**
-     * "Returns" borrowed Book with specified Barcode to Library 
+     * "Returns" borrowed Book with specified Barcode to Library
      * (<code>isCirculating=false</code>), or removes it from the system,
      * when {@link #TIMES_BORROWED_BEFORE_REMOVAL} was reached.
      * <p>
      * It is removed from the Patrons Account, but a reference to the Patron is
      * kept in the Books circulationHistory.
-     * 
+     * <p>
      * For Books that get removed from the System by this Method,
-     * the number of User requests needed, before the Library reaquires it 
+     * the number of User requests needed, before the Library reacquires it
      * is {@link #REQUESTS_FOR_RESTOCKING} ({@value #REQUESTS_FOR_RESTOCKING}).
-     * 
-     * @param barcode  Barcode of the Book to be returned
+     *
+     * @param barcode Barcode of the Book to be returned
      * @return true, if Book is returned | false, if Book is removed from system
      * @throws IllegalArgumentException if Barcode is not found in system
-     * @throws IllegalStateException if Book <code>isCirculating==false</code>
+     * @throws IllegalStateException    if Book <code>isCirculating==false</code>
      */
     public final boolean returnBook(Barcode barcode) {
         BookCopy copy = fetchEntry(barcode.isbn()).getCopyWith(barcode);
 
         if (!copy.isCirculating()) {   // this should not be possible (duplicate barcode)
-            throw new IllegalStateException(    
+            throw new IllegalStateException(
                     "The copy " + barcode + " has already been returned.");
         }
 
-                copy.setIsCirculating(false);
+        copy.setIsCirculating(false);
 
         AccountEntry account = fetchEntry(copy.lastOwner().username())
-                               .remove(copy);  // remove BookCopy from Patrons AccountEntry
+                .remove(copy);  // remove BookCopy from Patrons AccountEntry
 
         if (copy.isAtCapacity(TIMES_BORROWED_BEFORE_REMOVAL)) {
             fetchEntry(barcode.isbn())
-            .removeCopy(copy)
-            .setRequestsNeeded(REQUESTS_FOR_RESTOCKING);
+                    .removeCopy(copy)
+                    .setRequestsNeeded(REQUESTS_FOR_RESTOCKING);
             return false;  // BOOK REMOVED FROM SYSTEM (borrowed too often)
         }
 
@@ -234,10 +234,9 @@ public final class Library {
 
     /**
      * CURRENTLY UNDOCUMENTED
-     * 
-     * @param username  Username
-     * @param isbn  Isbn
-     * 
+     *
+     * @param username Username
+     * @param isbn     Isbn
      * @return false. true, if isbn was added to shopping list
      */
     public final boolean requestUnregisteredBook(Username username, Isbn isbn) {
@@ -245,16 +244,16 @@ public final class Library {
         BookEntry entry = fetchEntry(isbn);
 
         if (
-                   !shoppingList.contains(isbn)      
-                && !entry.hasAvailableCopy()        
-                && entry.addToRequests(patron) == entry.requestsNeeded()  
-                         // adds patron to requests Set and returns it's size as int
-                                                  
+                !shoppingList.contains(isbn)
+                        && !entry.hasAvailableCopy()
+                        && entry.addToRequests(patron) == entry.requestsNeeded()
+            // adds patron to requests Set and returns it's size as int
 
-            ) {
+
+                ) {
 
             entry.clearRequests();
-            shoppingList.add(isbn);  
+            shoppingList.add(isbn);
             return true;   // book will be aquired now
         }
 
@@ -264,20 +263,19 @@ public final class Library {
 
     /**
      * CURRENTLY UNDOCUMENTED
-     * 
-     * @param username  Username
-     * @param description  BookDescription
-     * 
+     *
+     * @param username    Username
+     * @param description BookDescription
      * @return true, if BookDescription was registered. false, if request failed
      */
     public final boolean requestUnregisteredBook(Username username, BookDescription description) {
         try {
             createEntry(description)  // throws IllegalArgumentException when isbn already in system
-            .setRequestsNeeded(REQUESTS_FOR_AQUISITION)
-            .addToRequests(fetchEntry(username).patron());  // set takes care of duplicates
-            return true;  
+                    .setRequestsNeeded(REQUESTS_FOR_ACQUISITION)
+                    .addToRequests(fetchEntry(username).patron());  // set takes care of duplicates
+            return true;
 
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return false; // request failed
         }
     }
@@ -285,8 +283,8 @@ public final class Library {
 
 // QUERY ----------------------------------------------------------------->
 
-    /* 
-     *  Placeholder for Methods getting Patrons, Books. 
+    /*
+     *  Placeholder for Methods getting Patrons, Books.
      *  Patron<->AccountEntry should be refactored/merged first, with appropiate Interface
      */
 
@@ -297,7 +295,7 @@ public final class Library {
     /**
      *  CURRENTLY UNDOCUMENTED
      */
-    public final List<BookEntry> getAllBookEntries() {  
+    public final List<BookEntry> getAllBookEntries() {
         //        return catalog.values();  // bad, new collection is backed by map (map can be changed)!
         return new ArrayList<>(catalog.values());  // devensive copy vs performance?
     }
@@ -351,7 +349,7 @@ public final class Library {
     /**
      * CURRENTLY UNDOCUMENTED
      */
-    @SuppressWarnings("unchecked") 
+    @SuppressWarnings("unchecked")
     public final List<Book> getAllCopies(Isbn isbn) {   // Book hides BookCopy
         return (List<Book>)(List<?>)fetchEntry(isbn).copies(); // hacky unchecked double cast - find a better way with generics
 
@@ -360,97 +358,107 @@ public final class Library {
 // STRING ADAPTERS FOR CONVENIENCE --------------------------------------------------->
 
     /**
-    *
-    * String adapter for convenience; see {@link #registerAdditionalCopyOf(Isbn)} for documentation
-    *
-    * @param isbn  String
-    * @return  Barcode
-    */
-    public final Barcode registerAdditionalCopy(String isbn) { return registerAdditionalCopyOf(Isbn.from(isbn)); }
+     * String adapter for convenience; see {@link #registerAdditionalCopyOf(Isbn)} for documentation
+     *
+     * @param isbn String
+     * @return Barcode
+     */
+    public final Barcode registerAdditionalCopy(String isbn) {
+        return registerAdditionalCopyOf(Isbn.from(isbn));
+    }
 
     /**
-    *
-    * String adapter for convenience; see {@link #checkoutBook(Username, Barcode)} for documentation
-     * @param username  String
+     * String adapter for convenience; see {@link #checkoutBook(Username, Barcode)} for documentation
+     *
+     * @param username String
      * @param barcode  String
-    *
-    * @return boolean
-    */
-    public final boolean checkoutBook(String username, String barcode) { return checkoutBook(Username.from(username), Barcode.from(barcode)); }
+     * @return boolean
+     */
+    public final boolean checkoutBook(String username, String barcode) {
+        return checkoutBook(Username.from(username), Barcode.from(barcode));
+    }
 
     /**
-    *
-    * String adapter for convenience; see {@link #returnBook(Barcode)} for documentation
-    *
-    * @param barcode  String
-    * @return boolean
-    */
-    public final boolean returnBook(String barcode) { return returnBook(Barcode.from(barcode)); }
+     * String adapter for convenience; see {@link #returnBook(Barcode)} for documentation
+     *
+     * @param barcode String
+     * @return boolean
+     */
+    public final boolean returnBook(String barcode) {
+        return returnBook(Barcode.from(barcode));
+    }
 
     /**
-    *
-    * String adapter for convenience; see {@link #requestUnregisteredBook(Username, Isbn)} for documentation
-     * @param isbn  String
-     * @param username  String
-    *
-    * @return boolean
-    */
-    public final boolean requestRegisteredBook(String username, String isbn) { return requestUnregisteredBook(Username.from(username), Isbn.from(isbn)); }
+     * String adapter for convenience; see {@link #requestUnregisteredBook(Username, Isbn)} for documentation
+     *
+     * @param isbn     String
+     * @param username String
+     * @return boolean
+     */
+    public final boolean requestRegisteredBook(String username, String isbn) {
+        return requestUnregisteredBook(Username.from(username), Isbn.from(isbn));
+    }
 
     /**
-    *
-    * String adapter for convenience; see {@link #requestUnregisteredBook(Username, BookDescription)} for documentation
-     * @param username  String
-     * @param description  BookDescription
-    *
-    * @return boolean
-    */
-    public final boolean requestUnregisteredBook(String username, BookDescription description) { return requestUnregisteredBook(Username.from(username), description); }
+     * String adapter for convenience; see {@link #requestUnregisteredBook(Username, BookDescription)} for documentation
+     *
+     * @param username    String
+     * @param description BookDescription
+     * @return boolean
+     */
+    public final boolean requestUnregisteredBook(String username, BookDescription description) {
+        return requestUnregisteredBook(Username.from(username), description);
+    }
 
     /**
-    *
-    * String adapter for convenience; see {@link #getCurrentOwners(Isbn)} for documentation
-    *
-    * @param isbn String
-    * @return Map of Barcode, Patron
-    */
-    public final Map<Barcode, Patron> getCurrentOwners(String isbn) { return getCurrentOwners(Isbn.from(isbn)); }
+     * String adapter for convenience; see {@link #getCurrentOwners(Isbn)} for documentation
+     *
+     * @param isbn String
+     * @return Map of Barcode, Patron
+     */
+    public final Map<Barcode, Patron> getCurrentOwners(String isbn) {
+        return getCurrentOwners(Isbn.from(isbn));
+    }
 
     /**
-    *
-    * String adapter for convenience; see {@link #getCirculationHistory(Barcode)} for documentation
-    *
-    * @param barcode  String
-    * @return List of Patron
-    */
-    public final List<Patron> getCirculationHistory(String barcode) { return getCirculationHistory(Barcode.from(barcode)); }
+     * String adapter for convenience; see {@link #getCirculationHistory(Barcode)} for documentation
+     *
+     * @param barcode String
+     * @return List of Patron
+     */
+    public final List<Patron> getCirculationHistory(String barcode) {
+        return getCirculationHistory(Barcode.from(barcode));
+    }
 
     /**
-    *
-    * String adapter for convenience; see {@link #getAllCopies(Isbn)} for documentation
-    *
-    * @param isbn  String
-    * @return List of Book
-    */
-    public final List<Book> getAllCopies(String isbn) { return getAllCopies(Isbn.from(isbn)); }
+     * String adapter for convenience; see {@link #getAllCopies(Isbn)} for documentation
+     *
+     * @param isbn String
+     * @return List of Book
+     */
+    public final List<Book> getAllCopies(String isbn) {
+        return getAllCopies(Isbn.from(isbn));
+    }
 
     /**
-    *
-    * String adapter for convenience; see {@link #getRequestsList(Isbn)} for documentation
-    *
-    * @param isbn String
-    * @return List of Patron
-    */
-    public final List<Patron> getRequestsList(String isbn) { return getRequestsList(Isbn.from(isbn)); }
+     * String adapter for convenience; see {@link #getRequestsList(Isbn)} for documentation
+     *
+     * @param isbn String
+     * @return List of Patron
+     */
+    public final List<Patron> getRequestsList(String isbn) {
+        return getRequestsList(Isbn.from(isbn));
+    }
 
     /**
-    *
-    * String adapter for convenience; see {@link #getRequestsAsInt(Isbn)} for documentation
-    *
-    * @param isbn  String
-    * @return int requests
-    */
-    public final int getRequestsAsInt(String isbn) { return getRequestsAsInt(Isbn.from(isbn)); }
+     * String adapter for convenience; see {@link #getRequestsAsInt(Isbn)} for documentation
+     *
+     * @param isbn String
+     * @return int requests
+     */
+    public final int getRequestsAsInt(String isbn) {
+        return getRequestsAsInt(Isbn.from(isbn));
+    }
 
 
     //=============================================================================//
@@ -477,7 +485,7 @@ public final class Library {
 
     // TODO overload with extra bool for "unsave" adding (without Patron==Patron check)
     private AccountEntry createEntry(Patron unregisteredPatron) {
-        Username username = unregisteredPatron.username(); 
+        Username username = unregisteredPatron.username();
 
         if (accounts.containsKey(username)) {
             throw new IllegalArgumentException(

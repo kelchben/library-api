@@ -214,7 +214,7 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
 
 
     //
-    o("\n#returnBook(Barcode) return book [3-11-345672-4:1] to the library  -> true if succesfull | false if Book is removed from system due to wear and tear... \n" +
+    o("\n#returnBook(Barcode) return book [3-11-345672-4:1] to the library  -> true if successful | false if Book is removed from system due to wear and tear... \n" +
 
 
     // return a book by scanning it's barcode
@@ -305,7 +305,7 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
          
 
     );
-    o("\nNow this Book needs 4 more requests till REQUESTS_FOR_AQUISITION (5) is reached and the isbn is added to the shopping list (true).");
+    o("\nNow this Book needs 4 more requests till REQUESTS_FOR_ACQUISITION (5) is reached and the isbn is added to the shopping list (true).");
                 // TODO would be nicer to still count them for shopping list ordering
     
     // trying if this needs 5 requests 
