@@ -1,5 +1,7 @@
 # library-api -- homework assignment -- starting points = LibraryTest.java, Library.java
 
+doc: http://htmlpreview.github.io/?https://github.com/krlgit/library-api/blob/master/doc/index.html
+
 - ~~create Wrappers that take Strings as Arguments instead of Isbn, Username, Barcode( is there a generic way?)~~
 - ~~implement Barcode.from(String)~~
 - ~~builder validations~~
