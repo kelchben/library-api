@@ -141,7 +141,7 @@ public class BookDescription {
 
 		}
 
-		public BookDescription(Builder builder) {
+		private BookDescription(Builder builder) {
 			isbn = builder.isbn;
 			title = builder.title;
 			author = builder.author;

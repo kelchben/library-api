@@ -16,7 +16,7 @@ final class AccountEntry {
 	private final Set<BookCopy> currentlyBorrowed;
 	// private final Set<Isbn> requests;
 
-	static final AccountEntry from(Patron patron) {
+	static AccountEntry from(Patron patron) {
 		return new AccountEntry(patron);
 	}
 

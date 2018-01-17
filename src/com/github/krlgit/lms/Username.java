@@ -4,8 +4,6 @@ package com.github.krlgit.lms;
  * This immutable class is a String Wrapper Type for Usernames. In the future it 
  * could provide validation mechanisms, etc.
  * 
- * IT IS CURRENTLY UNDOCUMENTED
- * 
  */
 public final class Username {
 	private final String username;
@@ -40,13 +38,14 @@ public final class Username {
 	}
  
 
-	private int hashCode;  // is caching necessary here - String already caches? 
+	private int hashCode;  // is caching necessary here - String already caches?
 
 	@Override
 	public int hashCode() {   
 		int result = hashCode;
 		if (hashCode == 0) {
-		result = username.hashCode();	
+		result = username.hashCode();
+		hashCode = result;
 		}
 		return result;
 	}

@@ -235,8 +235,8 @@ public final class Library {
     /**
      * CURRENTLY UNDOCUMENTED
      * 
-     * @param username 
-     * @param isbn
+     * @param username Username
+     * @param isbn Isbn
      * 
      * @return false. true, if isbn was added to shopping list
      */
@@ -265,8 +265,8 @@ public final class Library {
     /**
      * CURRENTLY UNDOCUMENTED
      * 
-     * @param username
-     * @param description
+     * @param username Username
+     * @param description BookDescription
      * 
      * @return true, if BookDescription was registered. false, if request failed
      */
@@ -299,7 +299,7 @@ public final class Library {
      */
     public final List<BookEntry> getAllBookEntries() {  
         //        return catalog.values();  // bad, new collection is backed by map (map can be changed)!
-        return new ArrayList<BookEntry>(catalog.values());  // devensive copy vs performance? 
+        return new ArrayList<>(catalog.values());  // devensive copy vs performance?
     }
 
 
@@ -462,7 +462,7 @@ public final class Library {
 
     // REGISTER ------------------------------------------------------>
 
-    private final BookEntry createEntry(BookDescription description) {
+    private BookEntry createEntry(BookDescription description) {
         Isbn isbn = description.isbn();
 
         if (catalog.containsKey(isbn)) {
@@ -476,7 +476,7 @@ public final class Library {
 
 
     // TODO overload with extra bool for "unsave" adding (without Patron==Patron check)
-    private final AccountEntry createEntry(Patron unregisteredPatron) {
+    private AccountEntry createEntry(Patron unregisteredPatron) {
         Username username = unregisteredPatron.username(); 
 
         if (accounts.containsKey(username)) {
@@ -508,7 +508,7 @@ public final class Library {
 
 
     // overload "lookup" ? lookupAccount? does this even work without static library?
-    private final AccountEntry fetchEntry(Username usr) {
+    private AccountEntry fetchEntry(Username usr) {
         AccountEntry entry = accounts.get(usr);
         if (entry == null) {
             throw new IllegalArgumentException(
@@ -517,7 +517,7 @@ public final class Library {
         return entry;
     }
 
-    private final BookEntry fetchEntry(Isbn isbn) {
+    private BookEntry fetchEntry(Isbn isbn) {
         BookEntry entry = catalog.get(isbn);
         if (entry == null) {
             throw new IllegalArgumentException(

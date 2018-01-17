@@ -15,7 +15,6 @@ public class LibraryTest {
     public static void main(String[] args) {
 
 
-
 //--------------------------------> START HERE <----------------------------------
 
 
@@ -343,7 +342,7 @@ Patron somePatron = Patron.with()                           // new Patron.Builde
 
     o("\n#getAllBookEntries() --> get all Books that are registered in the library:\n");
 
-            // TODO LEAKING IMPLEMENTATION DETAIL, this should not return BookEntry Objects
+            // TODO leaking implementation detail, this should not return BookEntry Objects
             // TODO why not return a nested Map<BookDescription, Map<Book, Patron>> ?
 
     o(

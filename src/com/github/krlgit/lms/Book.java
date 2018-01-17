@@ -18,13 +18,13 @@ import com.github.krlgit.lms.BookDescription;
 public interface Book {
 
 	// TODO how to implement this redirection in a more generic way? does it even make sense here? 
-	public static BookDescription.Builder with() {
+	static BookDescription.Builder with() {
 		return new BookDescription.Builder();
 	}
 
-	public Barcode barcode();
+	Barcode barcode();
 
-	public BookDescription description();
+	BookDescription description();
 
 //	public boolean isCirculating();
 

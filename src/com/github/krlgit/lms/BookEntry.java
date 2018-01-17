@@ -19,7 +19,7 @@ final class BookEntry {
 	private final Set<Patron> requests;
 	private int requestsNeeded;
 
-	final static BookEntry from(BookDescription description) {
+	static BookEntry from(BookDescription description) {
 		return new BookEntry(description);
 	} 
 
@@ -32,7 +32,7 @@ final class BookEntry {
 	}
 
 	public final List<BookCopy> copies() {
-		return new ArrayList<BookCopy>(copies);
+		return new ArrayList<>(copies);
 	}
 
 	public final BookCopy addBookCopy() {   // TODO this and similar should return boolean
@@ -80,13 +80,7 @@ final class BookEntry {
 				"No copy of " + description.title() + " is available.");
 	}
 
-	// should return boolean?
-	final BookEntry addCopy() {
-		copies.add(new BookCopy(description, generateBarcode()));
-		return this;
-	}
-
-	final BookEntry removeCopy(BookCopy copy) {
+    final BookEntry removeCopy(BookCopy copy) {
 		copies.remove(copy);
 		return this;
 	}
@@ -95,7 +89,7 @@ final class BookEntry {
 		return description;
 	}
 
-	private final Barcode generateBarcode() {
+	private Barcode generateBarcode() {
 		return Barcode.from(description.isbn(), copies.size() + 1);
 	}
 
@@ -106,7 +100,7 @@ final class BookEntry {
 	}
 
 	final int requestsNeeded() {
-		return Integer.valueOf(requestsNeeded);
+		return Integer.valueOf(requestsNeeded);  // defensive copy
 	}
 
 

@@ -123,10 +123,9 @@ public class Patron {
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Patron)) return false;	
 		Patron other = (Patron) obj;
-		return other.firstName().equals(firstName) &&
-			   other.lastName().equals(lastName) &&
-			   other.birthdate().equals(birthdate) ?
-		       true : false;
+		return other.firstName().equals(firstName)
+                && other.lastName().equals(lastName)
+                && other.birthdate().equals(birthdate);
 	}
 	
 
