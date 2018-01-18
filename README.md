@@ -12,6 +12,3 @@ doc: http://htmlpreview.github.io/?https://github.com/krlgit/library-api/blob/ma
 - test * in progress
 
 ![](https://github.com/krlgit/library-api/blob/master/lms_dep.png)
-![](https://github.com/krlgit/library-api/blob/master/Class%20Diagram1.png)
-
-
